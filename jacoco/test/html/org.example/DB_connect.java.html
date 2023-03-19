@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DB_connect.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">aims</a> &gt; <a href="index.source.html" class="el_package">org.example</a> &gt; <span class="el_source">DB_connect.java</span></div><h1>DB_connect.java</h1><pre class="source lang-java linenums">package org.example;
+import java.sql.*;
+
+<span class="nc" id="L4">public class DB_connect {</span>
+
+    public static Connection connect(){
+<span class="fc" id="L7">        System.out.println(&quot;first programme&quot;);</span>
+<span class="fc" id="L8">        Connection connection = null;</span>
+<span class="fc" id="L9">        String host=&quot;localhost&quot;;</span>
+<span class="fc" id="L10">        String port=&quot;5432&quot;;</span>
+<span class="fc" id="L11">        String db_name=&quot;Softie&quot;;</span>
+<span class="fc" id="L12">        String username=&quot;postgres&quot;;</span>
+<span class="fc" id="L13">        String password=&quot;Vishnu@123&quot;;</span>
+        try {
+<span class="fc" id="L15">            Class.forName(&quot;org.postgresql.Driver&quot;);</span>
+<span class="fc" id="L16">            connection = DriverManager.getConnection(&quot;jdbc:postgresql://&quot;+host+&quot;:&quot;+port+&quot;/&quot;+db_name+&quot;&quot;, &quot;&quot;+username+&quot;&quot;, &quot;&quot;+password+&quot;&quot;);</span>
+<span class="pc bpc" id="L17" title="1 of 2 branches missed.">            if (connection != null) {</span>
+<span class="fc" id="L18">                System.out.println(&quot;Connection OK&quot;);</span>
+            } else {
+<span class="nc" id="L20">                System.out.println(&quot;Connection Failed&quot;);</span>
+            }
+        }
+<span class="nc" id="L23">        catch (Exception e) {</span>
+<span class="nc" id="L24">            e.printStackTrace();</span>
+<span class="fc" id="L25">        }</span>
+<span class="fc" id="L26">        return connection;</span>
+
+
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

@@ -1,0 +1,3 @@
+I have made AcadLoginTest, Course_Offtest, CourseTest, DepartmentTest, ins_login, MainMethodTest, MainTest,PreREqTest,ProfessorTest,st_loginTest,StudentTest  
+
+Here in these i have Test Cases or functions such that it will initialize the neccesaary for any basic function in a seperate function which runs before the every function. And also i have a deleter function such that it tears down and manages to databse to it's previous level. and every function need to make that no additional data is being generated from that function and no information other than rules are required for any information requirement in function or methods.
