@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="org.example.Course_OffTest" tests="7" skipped="0" failures="0" errors="0" timestamp="2023-03-08T12:19:29" hostname="DELL-VISHNU1097" time="0.111">
+  <properties/>
+  <testcase name="CorrectCreds()" classname="org.example.Course_OffTest" time="0.036"/>
+  <testcase name="wrongUpdatePermit()" classname="org.example.Course_OffTest" time="0.007"/>
+  <testcase name="correctUpdatePermit()" classname="org.example.Course_OffTest" time="0.02"/>
+  <testcase name="wronggetPermit()" classname="org.example.Course_OffTest" time="0.009"/>
+  <testcase name="testGetByOffId()" classname="org.example.Course_OffTest" time="0.009"/>
+  <testcase name="testDelete()" classname="org.example.Course_OffTest" time="0.009"/>
+  <testcase name="correctgetPermit()" classname="org.example.Course_OffTest" time="0.007"/>
+  <system-out><![CDATA[first programme
+Connection OK
+New course XY987 added successfully.
+New professor added to database!
+New course offering added to database!
+Course offering retrieved from database!
+New course offering added to database!
+No row(s) updated.
+New course offering added to database!
+1 rows updated.
+New course offering added to database!
+No course offering found with given off_id.
+New course offering added to database!
+Course offering retrieved from database!
+New course offering added to database!
+Course offering deleted from database!
+No course offering found with given off_id.
+New course offering added to database!
+Course deleted successfully.
+Professor removed from database!
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

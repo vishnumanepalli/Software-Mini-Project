@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Course_Off.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">aims</a> &gt; <a href="index.source.html" class="el_package">org.example</a> &gt; <span class="el_source">Course_Off.java</span></div><h1>Course_Off.java</h1><pre class="source lang-java linenums">package org.example;
+import java.sql.*;
+//import java.util.ArrayList;
+//import java.util.List;
+
+public class Course_Off {
+    private int off_id;
+    private String code;
+    private String prof;
+    private int year;
+    private int sem;
+    private float cg_req;
+    private String dep;
+    private String type;
+
+<span class="fc" id="L16">    public Course_Off(String code, String prof, int year, int sem, float cg_req, String dep, String type) {</span>
+<span class="fc" id="L17">        this.code = code;</span>
+<span class="fc" id="L18">        this.prof = prof;</span>
+<span class="fc" id="L19">        this.year = year;</span>
+<span class="fc" id="L20">        this.sem = sem;</span>
+<span class="fc" id="L21">        this.cg_req = cg_req;</span>
+<span class="fc" id="L22">        this.dep = dep;</span>
+<span class="fc" id="L23">        this.type = type;</span>
+<span class="fc" id="L24">    }</span>
+
+    public int getOff_id() {
+<span class="fc" id="L27">        return off_id;</span>
+    }
+
+    public void setOff_id(int a) {
+<span class="fc" id="L31">        this.off_id = a;</span>
+<span class="fc" id="L32">    }</span>
+
+    public String getCode() {
+<span class="fc" id="L35">        return code;</span>
+    }
+
+    public String getProf() {
+<span class="fc" id="L39">        return prof;</span>
+    }
+
+    public int getYear() {
+<span class="fc" id="L43">        return year;</span>
+    }
+
+    public int getSem() {
+<span class="fc" id="L47">        return sem;</span>
+    }
+
+    public float getCg_req() {
+<span class="fc" id="L51">        return cg_req;</span>
+    }
+
+    public String getDep() {
+<span class="fc" id="L55">        return dep;</span>
+    }
+
+    public String getType() {
+<span class="fc" id="L59">        return type;</span>
+    }
+
+    public int getPermit(Connection conn) throws SQLException {
+<span class="fc" id="L63">        String sql = &quot;SELECT * FROM course_off WHERE off_id = ?&quot;;</span>
+<span class="fc" id="L64">        try (PreparedStatement statement = conn.prepareStatement(sql)) {</span>
+<span class="fc" id="L65">            statement.setInt(1, off_id);</span>
+<span class="fc" id="L66">            ResultSet result = statement.executeQuery();</span>
+<span class="fc bfc" id="L67" title="All 2 branches covered.">            if (result.next()) {</span>
+<span class="fc" id="L68">                int per = result.getInt(&quot;permit&quot;);</span>
+<span class="fc" id="L69">                return per;</span>
+            } else {
+<span class="fc" id="L71">                System.out.println(&quot;No course offering found with given off_id.&quot;);</span>
+<span class="fc" id="L72">                return -1;</span>
+            }
+<span class="pc bpc" id="L74" title="1 of 2 branches missed.">        } catch (SQLException e) {</span>
+<span class="nc" id="L75">            System.out.println(&quot;Error retrieving course offering by off_id: &quot; + e.getMessage());</span>
+<span class="nc" id="L76">            throw e;</span>
+        }
+    }
+
+    public int updatePermit(Connection conn) throws SQLException {
+<span class="fc" id="L81">        String sql = &quot;UPDATE course_off SET permit = ? WHERE off_id = ?&quot;;</span>
+<span class="fc" id="L82">        PreparedStatement pstmt = conn.prepareStatement(sql);</span>
+<span class="fc" id="L83">        pstmt.setInt(1, 1);</span>
+<span class="fc" id="L84">        pstmt.setInt(2, off_id);</span>
+<span class="fc" id="L85">        int rowsUpdated = pstmt.executeUpdate();</span>
+<span class="fc bfc" id="L86" title="All 2 branches covered.">        if (rowsUpdated == 0) {</span>
+<span class="fc" id="L87">            System.out.println(&quot;No row(s) updated.&quot;);</span>
+<span class="fc" id="L88">            return 1;</span>
+        } else {
+<span class="fc" id="L90">            System.out.println(rowsUpdated + &quot; rows updated.&quot;);</span>
+<span class="fc" id="L91">            return 0;</span>
+        }
+    }
+
+    public void save(Connection conn) throws SQLException {
+<span class="fc" id="L96">        String sql = &quot;INSERT INTO course_off(code, prof, year, sem, cg_req, dep, type) VALUES (?, ?, ?, ?, ?, ?, ?)&quot;;</span>
+<span class="fc" id="L97">        try(PreparedStatement statement = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {</span>
+<span class="fc" id="L98">            statement.setString(1, code);</span>
+<span class="fc" id="L99">            statement.setString(2, prof);</span>
+<span class="fc" id="L100">            statement.setInt(3, year);</span>
+<span class="fc" id="L101">            statement.setInt(4, sem);</span>
+<span class="fc" id="L102">            statement.setFloat(5, cg_req);</span>
+<span class="fc" id="L103">            statement.setString(6, dep);</span>
+<span class="fc" id="L104">            statement.setString(7, type);</span>
+<span class="fc" id="L105">            statement.executeUpdate();</span>
+
+<span class="fc" id="L107">            ResultSet rs = statement.getGeneratedKeys();</span>
+<span class="pc bpc" id="L108" title="1 of 2 branches missed.">            if (rs.next()) {</span>
+<span class="fc" id="L109">                off_id = rs.getInt(1);</span>
+            }
+<span class="fc" id="L111">            System.out.println(&quot;New course offering added to database!&quot;);</span>
+<span class="nc" id="L112">        } catch (SQLException e) {</span>
+<span class="nc" id="L113">            System.out.println(&quot;Error adding new course offering to database: &quot; + e.getMessage());</span>
+<span class="nc" id="L114">            throw e;</span>
+<span class="fc" id="L115">        }</span>
+<span class="fc" id="L116">    }</span>
+
+    public static void delete(Connection conn, int off_id) throws SQLException {
+<span class="fc" id="L119">        String sql = &quot;DELETE FROM course_off WHERE off_id = ?&quot;;</span>
+<span class="fc" id="L120">        try(PreparedStatement statement = conn.prepareStatement(sql)) {</span>
+<span class="fc" id="L121">            statement.setInt(1, off_id);</span>
+<span class="fc" id="L122">            statement.executeUpdate();</span>
+<span class="fc" id="L123">            System.out.println(&quot;Course offering deleted from database!&quot;);</span>
+<span class="nc" id="L124">        } catch (SQLException e) {</span>
+<span class="nc" id="L125">            System.out.println(&quot;Error deleting course offering from database: &quot; + e.getMessage());</span>
+<span class="nc" id="L126">            throw e;</span>
+<span class="fc" id="L127">        }</span>
+<span class="fc" id="L128">    }</span>
+
+    public static Course_Off getByOffId(Connection conn, int off_id) throws SQLException {
+<span class="fc" id="L131">        String sql = &quot;SELECT * FROM course_off WHERE off_id = ?&quot;;</span>
+<span class="fc" id="L132">        try (PreparedStatement statement = conn.prepareStatement(sql)) {</span>
+<span class="fc" id="L133">            statement.setInt(1, off_id);</span>
+<span class="fc" id="L134">            ResultSet result = statement.executeQuery();</span>
+<span class="fc bfc" id="L135" title="All 2 branches covered.">            if (result.next()) {</span>
+<span class="fc" id="L136">                Course_Off courseOff = new Course_Off(result.getString(&quot;code&quot;),</span>
+<span class="fc" id="L137">                        result.getString(&quot;prof&quot;),</span>
+<span class="fc" id="L138">                        result.getInt(&quot;year&quot;),</span>
+<span class="fc" id="L139">                        result.getInt(&quot;sem&quot;),</span>
+<span class="fc" id="L140">                        result.getFloat(&quot;cg_req&quot;),</span>
+<span class="fc" id="L141">                        result.getString(&quot;dep&quot;),</span>
+<span class="fc" id="L142">                        result.getString(&quot;type&quot;));</span>
+<span class="fc" id="L143">                courseOff.off_id = result.getInt(&quot;off_id&quot;);</span>
+<span class="fc" id="L144">                System.out.println(&quot;Course offering retrieved from database!&quot;);</span>
+<span class="fc" id="L145">                return courseOff;</span>
+            } else {
+<span class="fc" id="L147">                System.out.println(&quot;No course offering found with given off_id.&quot;);</span>
+<span class="fc" id="L148">                return null;</span>
+            }
+<span class="pc bpc" id="L150" title="1 of 2 branches missed.">        } catch (SQLException e) {</span>
+<span class="nc" id="L151">            System.out.println(&quot;Error retrieving course offering by off_id: &quot; + e.getMessage());</span>
+<span class="nc" id="L152">            throw e;</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

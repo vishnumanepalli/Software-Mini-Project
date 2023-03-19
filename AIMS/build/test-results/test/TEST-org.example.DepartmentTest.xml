@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="org.example.DepartmentTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2023-03-08T12:19:30" hostname="DELL-VISHNU1097" time="0.064">
+  <properties/>
+  <testcase name="testCheck()" classname="org.example.DepartmentTest" time="0.039"/>
+  <testcase name="correctInsert()" classname="org.example.DepartmentTest" time="0.009"/>
+  <testcase name="testDelete()" classname="org.example.DepartmentTest" time="0.007"/>
+  <system-out><![CDATA[first programme
+Connection OK
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

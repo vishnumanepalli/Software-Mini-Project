@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="org.example.StudentTest" tests="25" skipped="0" failures="0" errors="0" timestamp="2023-03-08T12:19:33" hostname="DELL-VISHNU1097" time="1.395">
+  <properties/>
+  <testcase name="deRegTest()" classname="org.example.StudentTest" time="0.085"/>
+  <testcase name="testUpdateStudent()" classname="org.example.StudentTest" time="0.026"/>
+  <testcase name="testNewRegSuccess()" classname="org.example.StudentTest" time="0.093"/>
+  <testcase name="testNewRegSuccess_2()" classname="org.example.StudentTest" time="0.162"/>
+  <testcase name="deRegFail1()" classname="org.example.StudentTest" time="0.054"/>
+  <testcase name="deRegFail2()" classname="org.example.StudentTest" time="0.06"/>
+  <testcase name="deRegFail4()" classname="org.example.StudentTest" time="0.055"/>
+  <testcase name="newRegFail10()" classname="org.example.StudentTest" time="0.046"/>
+  <testcase name="newRegFail12()" classname="org.example.StudentTest" time="0.046"/>
+  <testcase name="cgpaCheck()" classname="org.example.StudentTest" time="0.056"/>
+  <testcase name="testDeleteStudent()" classname="org.example.StudentTest" time="0.026"/>
+  <testcase name="testSaveNewStudent()" classname="org.example.StudentTest" time="0.029"/>
+  <testcase name="newRegFail2()" classname="org.example.StudentTest" time="0.043"/>
+  <testcase name="newRegFail3()" classname="org.example.StudentTest" time="0.037"/>
+  <testcase name="newRegFail4()" classname="org.example.StudentTest" time="0.039"/>
+  <testcase name="newRegFail5()" classname="org.example.StudentTest" time="0.04"/>
+  <testcase name="newRegFail6()" classname="org.example.StudentTest" time="0.06"/>
+  <testcase name="newRegFail7()" classname="org.example.StudentTest" time="0.049"/>
+  <testcase name="newRegFail8()" classname="org.example.StudentTest" time="0.047"/>
+  <testcase name="newRegFail9()" classname="org.example.StudentTest" time="0.043"/>
+  <testcase name="sgpaCheck()" classname="org.example.StudentTest" time="0.058"/>
+  <testcase name="wrongGetStudent()" classname="org.example.StudentTest" time="0.026"/>
+  <testcase name="correctGetStudent()" classname="org.example.StudentTest" time="0.022"/>
+  <testcase name="newRegFail7_2()" classname="org.example.StudentTest" time="0.059"/>
+  <testcase name="newRegFail7_3()" classname="org.example.StudentTest" time="0.088"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

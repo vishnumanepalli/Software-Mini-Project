@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Course.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">aims</a> &gt; <a href="index.source.html" class="el_package">org.example</a> &gt; <span class="el_source">Course.java</span></div><h1>Course.java</h1><pre class="source lang-java linenums">package org.example;
+import java.sql.*;
+//import java.util.*;
+
+public class Course {
+    private String code;
+    private String title;
+    private int lec;
+    private int tut;
+    private int per;
+    private int s_hrs;
+    private int credits;
+
+<span class="fc" id="L14">    public Course(String code, String title, int lec, int tut, int per, int s_hrs, int credits) {</span>
+<span class="fc" id="L15">        this.code = code;</span>
+<span class="fc" id="L16">        this.title = title;</span>
+<span class="fc" id="L17">        this.lec = lec;</span>
+<span class="fc" id="L18">        this.tut = tut;</span>
+<span class="fc" id="L19">        this.per = per;</span>
+<span class="fc" id="L20">        this.s_hrs = s_hrs;</span>
+<span class="fc" id="L21">        this.credits = credits;</span>
+<span class="fc" id="L22">    }</span>
+
+    public String getCode() {
+<span class="fc" id="L25">        return code;</span>
+    }
+
+    public void setCode(String code) {
+<span class="fc" id="L29">        this.code = code;</span>
+<span class="fc" id="L30">    }</span>
+
+    public String getTitle() {
+<span class="fc" id="L33">        return title;</span>
+    }
+
+//    public void setTitle(String title) {
+//        this.title = title;
+//    }
+
+    public int getLec() {
+<span class="fc" id="L41">        return lec;</span>
+    }
+
+//    public void setLec(int lec) {
+//        this.lec = lec;
+//    }
+
+    public int getTut() {
+<span class="fc" id="L49">        return tut;</span>
+    }
+
+//    public void setTut(int tut) {
+//        this.tut = tut;
+//    }
+
+    public int getPer() {
+<span class="fc" id="L57">        return per;</span>
+    }
+
+//    public void setPer(int per) {
+//        this.per = per;
+//    }
+
+    public int getS_hrs() {
+<span class="fc" id="L65">        return s_hrs;</span>
+    }
+
+//    public void setS_hrs(int s_hrs) {
+//        this.s_hrs = s_hrs;
+//    }
+
+    public int getCredits() {
+<span class="fc" id="L73">        return credits;</span>
+    }
+
+    public void setCredits(int credits) {
+<span class="fc" id="L77">        this.credits = credits;</span>
+<span class="fc" id="L78">    }</span>
+    public static Course get_course(Connection conn, String courseCode) throws SQLException {
+<span class="fc" id="L80">        String sql = &quot;SELECT * FROM course WHERE code = ?&quot;;</span>
+<span class="fc" id="L81">        try (PreparedStatement statement = conn.prepareStatement(sql)) {</span>
+<span class="fc" id="L82">            statement.setString(1, courseCode);</span>
+<span class="fc" id="L83">            ResultSet result = statement.executeQuery();</span>
+<span class="fc bfc" id="L84" title="All 2 branches covered.">            if (result.next()) {</span>
+<span class="fc" id="L85">                Course course = new Course(</span>
+<span class="fc" id="L86">                        result.getString(&quot;code&quot;),</span>
+<span class="fc" id="L87">                        result.getString(&quot;title&quot;),</span>
+<span class="fc" id="L88">                        result.getInt(&quot;lec&quot;),</span>
+<span class="fc" id="L89">                        result.getInt(&quot;tut&quot;),</span>
+<span class="fc" id="L90">                        result.getInt(&quot;per&quot;),</span>
+<span class="fc" id="L91">                        result.getInt(&quot;s_hrs&quot;),</span>
+<span class="fc" id="L92">                        result.getInt(&quot;credits&quot;));</span>
+<span class="fc" id="L93">                return course;</span>
+            } else {
+<span class="fc" id="L95">                return null;</span>
+            }
+<span class="pc bpc" id="L97" title="1 of 2 branches missed.">        } catch (SQLException e) {</span>
+<span class="nc" id="L98">            System.out.println(&quot;Error retrieving course: &quot; + e.getMessage());</span>
+<span class="nc" id="L99">            throw e;</span>
+        }
+    }
+
+    public int updateCourse(Connection conn) throws SQLException {
+<span class="fc" id="L104">        String sql = &quot;UPDATE course SET title = ?, lec = ?, tut = ?, per = ?, s_hrs = ?, credits = ? WHERE code = ?&quot;;</span>
+<span class="fc" id="L105">        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {</span>
+<span class="fc" id="L106">            pstmt.setString(1, title);</span>
+<span class="fc" id="L107">            pstmt.setInt(2, lec);</span>
+<span class="fc" id="L108">            pstmt.setInt(3, tut);</span>
+<span class="fc" id="L109">            pstmt.setInt(4, per);</span>
+<span class="fc" id="L110">            pstmt.setInt(5, s_hrs);</span>
+<span class="fc" id="L111">            pstmt.setInt(6, credits);</span>
+<span class="fc" id="L112">            pstmt.setString(7, code);</span>
+<span class="fc" id="L113">            int rowsUpdated = pstmt.executeUpdate();</span>
+<span class="fc bfc" id="L114" title="All 2 branches covered.">            if (rowsUpdated &gt; 0) {</span>
+<span class="fc" id="L115">                System.out.println(&quot;Course updated successfully.&quot;);</span>
+<span class="fc" id="L116">                return 1;</span>
+            } else {
+<span class="fc" id="L118">                System.out.println(&quot;No course found with code: &quot; + code);</span>
+<span class="fc" id="L119">                return 0;</span>
+            }
+<span class="pc bpc" id="L121" title="1 of 2 branches missed.">        } catch (SQLException e) {</span>
+<span class="nc" id="L122">            System.out.println(&quot;Error while updating course_cat information in database: &quot; + e.getMessage());</span>
+<span class="nc" id="L123">            throw e;</span>
+        }
+    }
+
+    public static int deleteCourse(Connection conn, String code) throws SQLException {
+<span class="fc" id="L128">        String sql = &quot;DELETE FROM course WHERE code = ?&quot;;</span>
+<span class="fc" id="L129">        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {</span>
+<span class="fc" id="L130">            pstmt.setString(1, code);</span>
+<span class="fc" id="L131">            int rowsDeleted = pstmt.executeUpdate();</span>
+<span class="fc bfc" id="L132" title="All 2 branches covered.">            if (rowsDeleted &gt; 0) {</span>
+<span class="fc" id="L133">                System.out.println(&quot;Course deleted successfully.&quot;);</span>
+<span class="fc" id="L134">                return 1;</span>
+            } else {
+<span class="fc" id="L136">                System.out.println(&quot;No course found&quot;);</span>
+<span class="fc" id="L137">                return 0;</span>
+            }
+<span class="pc bpc" id="L139" title="1 of 2 branches missed.">        }catch (SQLException e) {</span>
+<span class="nc" id="L140">            System.out.println(&quot;Error while deleting course information from database: &quot; + e.getMessage());</span>
+<span class="nc" id="L141">            throw e;</span>
+        }
+    }
+
+
+    public void createCourse(Connection conn) throws SQLException {
+<span class="fc" id="L147">        String sql = &quot;INSERT INTO course (code, title, lec, tut, per, s_hrs, credits) VALUES (?, ?, ?, ?, ?, ?, ?)&quot;;</span>
+<span class="fc" id="L148">        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {</span>
+<span class="fc" id="L149">            pstmt.setString(1, code);</span>
+<span class="fc" id="L150">            pstmt.setString(2, title);</span>
+<span class="fc" id="L151">            pstmt.setInt(3, lec);</span>
+<span class="fc" id="L152">            pstmt.setInt(4, tut);</span>
+<span class="fc" id="L153">            pstmt.setInt(5, per);</span>
+<span class="fc" id="L154">            pstmt.setInt(6, s_hrs);</span>
+<span class="fc" id="L155">            pstmt.setInt(7, credits);</span>
+<span class="fc" id="L156">            pstmt.executeUpdate();</span>
+<span class="fc" id="L157">            System.out.printf(&quot;New course %s added successfully.\n&quot;,code);</span>
+<span class="nc" id="L158">        } catch (SQLException e) {</span>
+<span class="nc" id="L159">            System.out.println(&quot;Error adding new course to database: &quot; + e.getMessage());</span>
+<span class="nc" id="L160">            throw e;</span>
+<span class="fc" id="L161">        }</span>
+<span class="fc" id="L162">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="org.example.AcadLoginTest" tests="5" skipped="0" failures="0" errors="0" timestamp="2023-03-08T12:19:23" hostname="DELL-VISHNU1097" time="4.39">
+  <properties/>
+  <testcase name="falseUpdate()" classname="org.example.AcadLoginTest" time="3.111"/>
+  <testcase name="correctCreds()" classname="org.example.AcadLoginTest" time="0.506"/>
+  <testcase name="trueUpdate()" classname="org.example.AcadLoginTest" time="0.217"/>
+  <testcase name="wrongDelete()" classname="org.example.AcadLoginTest" time="0.313"/>
+  <testcase name="correctDelete()" classname="org.example.AcadLoginTest" time="0.226"/>
+  <system-out><![CDATA[first programme
+Connection OK
+New user added to acad_office table!
+No user found with the given user_id in acad_office table.
+first programme
+Connection OK
+New user added to acad_office table!
+first programme
+Connection OK
+New user added to acad_office table!
+Password updated for user in acad_office table!
+first programme
+Connection OK
+New user added to acad_office table!
+No user found with the given user_id in acad_office table.
+first programme
+Connection OK
+New user added to acad_office table!
+User deleted from acad_office table!
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

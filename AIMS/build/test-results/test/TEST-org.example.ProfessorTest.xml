@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="org.example.ProfessorTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2023-03-08T12:19:32" hostname="DELL-VISHNU1097" time="1.095">
+  <properties/>
+  <testcase name="testDeleteProfessor()" classname="org.example.ProfessorTest" time="0.469"/>
+  <testcase name="testUpdateProfessor()" classname="org.example.ProfessorTest" time="0.474"/>
+  <testcase name="testSaveNewPr()" classname="org.example.ProfessorTest" time="0.15"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

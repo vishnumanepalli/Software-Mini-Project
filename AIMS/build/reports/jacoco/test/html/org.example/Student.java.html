@@ -1,0 +1,444 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Student.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">aims</a> &gt; <a href="index.source.html" class="el_package">org.example</a> &gt; <span class="el_source">Student.java</span></div><h1>Student.java</h1><pre class="source lang-java linenums">package org.example;
+import java.sql.*;
+import java.util.HashSet;
+import java.util.Set;
+
+public class Student {
+    private String name;
+    private String entry_no;
+    private String department;
+    private int batch;
+
+<span class="fc" id="L12">    public Student(String name, String entry_no, String department, int batch) {</span>
+<span class="fc" id="L13">        this.name = name;</span>
+<span class="fc" id="L14">        this.entry_no = entry_no;</span>
+<span class="fc" id="L15">        this.department = department;</span>
+<span class="fc" id="L16">        this.batch = batch;</span>
+<span class="fc" id="L17">    }</span>
+
+    public String getName() {
+<span class="fc" id="L20">        return name;</span>
+    }
+
+    public String getEntryNo() {
+<span class="fc" id="L24">        return entry_no;</span>
+    }
+
+    public String getDepartment() {
+<span class="fc" id="L28">        return department;</span>
+    }
+
+    public int getBatch() {
+<span class="fc" id="L32">        return batch;</span>
+    }
+
+    public String getTableName() {
+<span class="fc" id="L36">        return &quot;Table_&quot; + entry_no;</span>
+    }
+
+    public void setName(String name) {
+<span class="fc" id="L40">        this.name = name;</span>
+<span class="fc" id="L41">    }</span>
+
+//    public void setEntryNo(String entry_no) {
+//        this.entry_no = entry_no;
+//    }
+
+    public void setDepartment(String department) {
+<span class="fc" id="L48">        this.department = department;</span>
+<span class="fc" id="L49">    }</span>
+
+    public void setBatch(int batch) {
+<span class="fc" id="L52">        this.batch = batch;</span>
+<span class="fc" id="L53">    }</span>
+
+
+    public void save_new_st(Connection conn) throws SQLException {
+<span class="fc" id="L57">        String sql = &quot;INSERT INTO st_creds(st_name, st_entry_no, dept, batch) VALUES (?, ?, ?, ?)&quot;;</span>
+<span class="fc" id="L58">        try(PreparedStatement statement = conn.prepareStatement(sql)) {</span>
+<span class="fc" id="L59">            statement.setString(1, name);</span>
+<span class="fc" id="L60">            statement.setString(2, entry_no);</span>
+<span class="fc" id="L61">            statement.setString(3, department);</span>
+<span class="fc" id="L62">            statement.setInt(4, batch);</span>
+<span class="fc" id="L63">            statement.executeUpdate();</span>
+<span class="fc" id="L64">            System.out.println(&quot;New student added to database!&quot;);</span>
+
+            // create department_entry_no_name table
+<span class="fc" id="L67">            String tableName = getTableName();//department + &quot;_&quot; + entry_no + &quot;_&quot; + name;</span>
+<span class="fc" id="L68">            String createTableSql = &quot;CREATE TABLE &quot; + tableName + &quot; (&quot;</span>
+                    + &quot;code VARCHAR(10) NOT NULL,&quot;
+                    + &quot;grade INT DEFAULT NULL,&quot;
+                    + &quot;year INT NOT NULL,&quot;
+                    + &quot;sem INT NOT NULL,&quot;
+                    + &quot;off_id INTEGER NOT NULL,&quot;
+                    + &quot;PRIMARY KEY (code),&quot;
+                    + &quot;FOREIGN KEY (code) REFERENCES course(code),&quot;
+                    + &quot;FOREIGN KEY (off_id) REFERENCES course_off(off_id)&quot;
+                    + &quot;)&quot;;
+//            System.out.println(&quot;sql &quot; + createTableSql);
+<span class="fc" id="L79">            PreparedStatement createTableStatement = conn.prepareStatement(createTableSql);</span>
+<span class="fc" id="L80">            createTableStatement.executeUpdate();</span>
+<span class="fc" id="L81">            System.out.println(&quot;Table &quot; + tableName + &quot; created for &quot; + name);</span>
+<span class="nc" id="L82">        } catch (SQLException e) {</span>
+<span class="nc" id="L83">            System.out.println(&quot;Error adding new student to database: &quot; + e.getMessage());</span>
+<span class="nc" id="L84">            throw e;</span>
+<span class="fc" id="L85">        }</span>
+<span class="fc" id="L86">    }</span>
+
+    public static Student get_student(Connection conn, String entry_no) throws SQLException {
+<span class="fc" id="L89">        String sql = &quot;SELECT * FROM st_creds WHERE st_entry_no = ?&quot;;</span>
+<span class="fc" id="L90">        try (PreparedStatement statement = conn.prepareStatement(sql)) {</span>
+<span class="fc" id="L91">            statement.setString(1, entry_no);</span>
+<span class="fc" id="L92">            ResultSet result = statement.executeQuery();</span>
+
+<span class="fc bfc" id="L94" title="All 2 branches covered.">            if (result.next()) {</span>
+<span class="fc" id="L95">                String name = result.getString(&quot;st_name&quot;);</span>
+<span class="fc" id="L96">                String department = result.getString(&quot;dept&quot;);</span>
+<span class="fc" id="L97">                int batch = result.getInt(&quot;batch&quot;);</span>
+<span class="fc" id="L98">                Student student = new Student(name, entry_no, department, batch);</span>
+<span class="fc" id="L99">                return student;</span>
+            } else {
+<span class="fc" id="L101">                System.out.println(&quot;No student found with entry number &quot; + entry_no);</span>
+<span class="fc" id="L102">                return null;</span>
+            }
+<span class="pc bpc" id="L104" title="1 of 2 branches missed.">        } catch (SQLException e) {</span>
+<span class="nc" id="L105">            System.out.println(&quot;Error while getting student information from database: &quot; + e.getMessage());</span>
+<span class="nc" id="L106">            return null;</span>
+        }
+    }
+
+    public void update_student(Connection conn) throws SQLException {
+<span class="fc" id="L111">        String sql = &quot;UPDATE st_creds SET st_name = ?, dept = ?, batch = ? WHERE st_entry_no = ?&quot;;</span>
+<span class="fc" id="L112">        try (PreparedStatement statement = conn.prepareStatement(sql)) {</span>
+<span class="fc" id="L113">            statement.setString(1, name);</span>
+<span class="fc" id="L114">            statement.setString(2, department);</span>
+<span class="fc" id="L115">            statement.setInt(3, batch);</span>
+<span class="fc" id="L116">            statement.setString(4, entry_no);</span>
+<span class="fc" id="L117">            statement.executeUpdate();</span>
+<span class="fc" id="L118">            System.out.println(&quot;Student information updated in database!&quot;);</span>
+<span class="nc" id="L119">        } catch (SQLException e) {</span>
+<span class="nc" id="L120">            System.out.println(&quot;Error while updating student information in database: &quot; + e.getMessage());</span>
+<span class="nc" id="L121">            throw e;</span>
+<span class="fc" id="L122">        }</span>
+<span class="fc" id="L123">    }</span>
+
+    public void delete_student(Connection conn) throws SQLException {
+<span class="fc" id="L126">        String sql = &quot;DELETE FROM st_creds WHERE st_entry_no = ?&quot;;</span>
+<span class="fc" id="L127">        try (PreparedStatement statement = conn.prepareStatement(sql)) {</span>
+<span class="fc" id="L128">            statement.setString(1, entry_no);</span>
+<span class="fc" id="L129">            statement.executeUpdate();</span>
+<span class="fc" id="L130">            System.out.println(&quot;Student removed from database!&quot;);</span>
+
+            // drop department_entry_no_name table
+<span class="fc" id="L133">            String tableName = this.getTableName(); //department + &quot;_&quot; + entry_no + &quot;_&quot; + name;</span>
+<span class="fc" id="L134">            String dropTableSql = &quot;DROP TABLE IF EXISTS &quot; + tableName;</span>
+<span class="fc" id="L135">            PreparedStatement dropTableStatement = conn.prepareStatement(dropTableSql);</span>
+<span class="fc" id="L136">            dropTableStatement.executeUpdate();</span>
+<span class="fc" id="L137">            System.out.println(&quot;Table &quot; + tableName + &quot; dropped.&quot;);</span>
+<span class="nc" id="L138">        } catch (SQLException e) {</span>
+<span class="nc" id="L139">            System.out.println(&quot;Error while deleting student information from database: &quot; + e.getMessage());</span>
+<span class="nc" id="L140">            throw e;</span>
+<span class="fc" id="L141">        }</span>
+<span class="fc" id="L142">    }</span>
+
+    public double calculate_cgpa(Connection conn) throws SQLException {
+        // Get all rows from the department_entry_no_name table
+<span class="fc" id="L146">        String tableName =getTableName();// department + &quot;_&quot; + entry_no + &quot;_&quot; + name;</span>
+<span class="fc" id="L147">        String sql = &quot;SELECT * FROM &quot; + tableName;</span>
+<span class="fc" id="L148">        try (PreparedStatement statement = conn.prepareStatement(sql);</span>
+<span class="fc" id="L149">             ResultSet rs = statement.executeQuery()) {</span>
+
+<span class="fc" id="L151">            double totalGradePoints = 0.0;</span>
+<span class="fc" id="L152">            int totalCredits = 0;</span>
+
+<span class="fc bfc" id="L154" title="All 2 branches covered.">            while (rs.next()) {</span>
+<span class="fc" id="L155">                String courseCode = rs.getString(&quot;code&quot;);</span>
+<span class="fc" id="L156">                int grade = rs.getInt(&quot;grade&quot;);</span>
+<span class="fc bfc" id="L157" title="All 2 branches covered.">                if (rs.wasNull()) {</span>
+<span class="fc" id="L158">                    continue;</span>
+                }
+
+<span class="fc" id="L161">                Course course = Course.get_course(conn, courseCode);</span>
+<span class="fc" id="L162">                int credits = course.getCredits();</span>
+                double gradePoint;
+<span class="fc" id="L164">                gradePoint = (double)grade;</span>
+<span class="fc" id="L165">                totalGradePoints += gradePoint * credits;</span>
+<span class="fc" id="L166">                totalCredits += credits;</span>
+<span class="fc" id="L167">            }</span>
+
+            double cgpa;
+<span class="fc bfc" id="L170" title="All 2 branches covered.">            if (totalCredits == 0) {</span>
+<span class="fc" id="L171">                cgpa = 0.0;</span>
+            } else {
+<span class="fc" id="L173">                cgpa = totalGradePoints / totalCredits;</span>
+            }
+
+            // Print the CGPA
+<span class="fc" id="L177">            System.out.println(&quot;CGPA for &quot; + name + &quot; is &quot; + cgpa);</span>
+
+            // Return the calculated CGPA
+<span class="fc" id="L180">            return cgpa;</span>
+<span class="nc" id="L181">        } catch (SQLException e) {</span>
+<span class="nc" id="L182">            System.out.println(&quot;Error calculating CGPA: &quot; + e.getMessage());</span>
+<span class="nc" id="L183">            throw e;</span>
+        }
+    }
+
+    public double calculate_sgpa(Connection conn, int yr, int sem) throws SQLException {
+<span class="fc" id="L188">        String tableName =getTableName();</span>
+<span class="fc" id="L189">        String sql = &quot;SELECT * FROM &quot; + tableName + &quot; WHERE year = ? AND sem = ?&quot;;</span>
+<span class="fc" id="L190">        try (PreparedStatement statement = conn.prepareStatement(sql)) {</span>
+<span class="fc" id="L191">            statement.setInt(1, yr);</span>
+<span class="fc" id="L192">            statement.setInt(2, sem);</span>
+<span class="fc" id="L193">            ResultSet rs = statement.executeQuery();</span>
+
+<span class="fc" id="L195">            double totalGradePoints = 0.0;</span>
+<span class="fc" id="L196">            int totalCredits = 0;</span>
+
+<span class="fc bfc" id="L198" title="All 2 branches covered.">            while (rs.next()) {</span>
+<span class="fc" id="L199">                String courseCode = rs.getString(&quot;code&quot;);</span>
+<span class="fc" id="L200">                int grade = rs.getInt(&quot;grade&quot;);</span>
+<span class="pc bpc" id="L201" title="1 of 2 branches missed.">                if (rs.wasNull()) {</span>
+<span class="nc" id="L202">                    continue;</span>
+                }
+
+<span class="fc" id="L205">                Course course = Course.get_course(conn, courseCode);</span>
+
+<span class="fc" id="L207">                int credits = course.getCredits();</span>
+                double gradePoint;
+
+<span class="fc" id="L210">                gradePoint = (double)grade;</span>
+<span class="fc" id="L211">                totalGradePoints += gradePoint * credits;</span>
+<span class="fc" id="L212">                totalCredits += credits;</span>
+<span class="fc" id="L213">            }</span>
+
+            double cgpa;
+<span class="fc bfc" id="L216" title="All 2 branches covered.">            if (totalCredits == 0) {</span>
+<span class="fc" id="L217">                cgpa = 0.0;</span>
+            } else {
+<span class="fc" id="L219">                cgpa = totalGradePoints / totalCredits;</span>
+            }
+
+<span class="fc" id="L222">            System.out.println(&quot;CGPA for &quot; + name + &quot; is &quot; + cgpa);</span>
+
+<span class="fc" id="L224">            return cgpa;</span>
+<span class="nc" id="L225">        } catch (SQLException e) {</span>
+<span class="nc" id="L226">            System.out.println(&quot;Error calculating CGPA: &quot; + e.getMessage());</span>
+<span class="nc" id="L227">            throw e;</span>
+        }
+    }
+
+    public int new_reg(Connection conn, int off_id, int year, int sem) throws SQLException {
+<span class="fc bfc" id="L232" title="All 2 branches covered.">        if (isEnrolled(conn, off_id)) {</span>
+<span class="fc" id="L233">            System.out.println(&quot;Already enrolled in this course&quot;);</span>
+<span class="fc" id="L234">            return 2;</span>
+        }
+<span class="fc" id="L236">        Course_Off co = Course_Off.getByOffId(conn, off_id);</span>
+<span class="fc bfc" id="L237" title="All 2 branches covered.">        if (co == null) {</span>
+<span class="fc" id="L238">            System.out.println(&quot;Invalid off_id provided&quot;);</span>
+<span class="fc" id="L239">            return 3;</span>
+        }
+<span class="pc bpc" id="L241" title="1 of 6 branches missed.">        if(!(co.getYear() == year &amp; co.getSem() == sem)) {</span>
+<span class="fc" id="L242">            System.out.println(&quot;Wrong year or sem to register in this course&quot;);</span>
+<span class="fc" id="L243">            return 4;</span>
+        }
+<span class="fc" id="L245">        double cgpa = calculate_cgpa(conn);</span>
+//        String code;
+<span class="fc" id="L247">        String selectSql = &quot;SELECT cg_req FROM course_off WHERE off_id = ?&quot;;</span>
+
+<span class="fc" id="L249">        try (PreparedStatement pstmt = conn.prepareStatement(selectSql)) {</span>
+<span class="fc" id="L250">            pstmt.setInt(1, off_id);</span>
+<span class="fc" id="L251">            ResultSet rs = pstmt.executeQuery();</span>
+
+<span class="pc bpc" id="L253" title="1 of 2 branches missed.">            if (rs.next()) {</span>
+<span class="fc" id="L254">                double cg_req = rs.getDouble(&quot;cg_req&quot;);</span>
+//                code = getCourseCode(conn, off_id);
+//                String dep = getOffDep(conn, off_id);
+<span class="fc bfc" id="L257" title="All 2 branches covered.">                if(cgpa &lt; cg_req)</span>
+                {
+<span class="fc" id="L259">                    System.out.println(&quot;CGPA not sufficient&quot;);</span>
+<span class="fc" id="L260">                    return 5;</span>
+                }
+<span class="fc" id="L262">                boolean cx23 = checkPreRequisites(conn, co.getCode(), getTableName());</span>
+<span class="fc bfc" id="L263" title="All 2 branches covered.">                if(!cx23)</span>
+                {
+<span class="fc" id="L265">                    System.out.println(&quot;Prerquisites not full-filled&quot;);</span>
+<span class="fc" id="L266">                    return 6;</span>
+                }
+<span class="fc bfc" id="L268" title="All 2 branches covered.">                if(!newCreditCheck(conn, Course.get_course(conn, co.getCode()).getCredits(), year, sem))</span>
+                {
+<span class="fc" id="L270">                    System.out.println(&quot;Credit Limit Exceeded&quot;);</span>
+<span class="fc" id="L271">                    return 7;</span>
+                }
+<span class="fc bfc" id="L273" title="All 2 branches covered.">                if(co.getPermit(conn) == 1)</span>
+                {
+<span class="fc" id="L275">                    System.out.println(&quot;This offering is freezed&quot;);</span>
+<span class="fc" id="L276">                    return 9;</span>
+                }
+<span class="fc bfc" id="L278" title="All 2 branches covered.">                if (co.getDep().equals(department)) {</span>
+<span class="fc" id="L279">                    return insert_reg(conn, off_id, co.getCode(), null, co.getYear(), co.getSem());</span>
+                } else {
+<span class="fc" id="L281">                    System.out.println(&quot;Does not belong to this department to register for this course&quot;);</span>
+<span class="fc" id="L282">                    return 12;</span>
+                }
+            }
+<span class="pc bpc" id="L285" title="6 of 12 branches missed.">        } catch (SQLException e) {</span>
+<span class="nc" id="L286">            System.out.println(&quot;Error checking cg_req in course_off table: &quot; + e.getMessage());</span>
+<span class="nc" id="L287">            throw e;</span>
+<span class="nc" id="L288">        }</span>
+<span class="nc" id="L289">        return -1;</span>
+    }
+
+    private int insert_reg(Connection conn, int off_id, String code, Integer grade, int year, int sem) throws SQLException {
+<span class="fc" id="L293">        String tableName = getTableName();//department + &quot;_&quot; + entry_no + &quot;_&quot; + name;</span>
+<span class="fc" id="L294">        String sql = &quot;INSERT INTO &quot; + tableName + &quot; (off_id, code, grade, year, sem) VALUES (?, ?, ?, ?, ?)&quot;;</span>
+
+<span class="fc" id="L296">        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {</span>
+<span class="fc" id="L297">            pstmt.setInt(1, off_id);</span>
+<span class="fc" id="L298">            pstmt.setString(2, code);</span>
+<span class="fc" id="L299">            pstmt.setInt(4, year);</span>
+<span class="fc" id="L300">            pstmt.setInt(5, sem);</span>
+<span class="fc" id="L301">            pstmt.setNull(3, java.sql.Types.INTEGER);</span>
+<span class="fc" id="L302">            pstmt.executeUpdate();</span>
+<span class="fc" id="L303">            return 10;</span>
+<span class="nc" id="L304">        } catch (SQLException e) {</span>
+<span class="nc" id="L305">            System.out.println(&quot;Error inserting into &quot; + tableName + &quot; table: &quot; + e.getMessage());</span>
+<span class="nc" id="L306">            throw e;</span>
+        }
+    }
+
+    public int dereg(Connection conn, int off_id) throws SQLException {
+<span class="fc" id="L311">        String tableName = getTableName();</span>
+
+<span class="fc" id="L313">        Course_Off cou = Course_Off.getByOffId(conn, off_id);</span>
+<span class="fc bfc" id="L314" title="All 2 branches covered.">        if (cou == null) {</span>
+<span class="fc" id="L315">            System.out.println(&quot;Invalid off_id provided&quot;);</span>
+<span class="fc" id="L316">            return 1;</span>
+        }
+<span class="fc bfc" id="L318" title="All 2 branches covered.">        if(cou.getPermit(conn) == 1)</span>
+        {
+<span class="fc" id="L320">            System.out.println(&quot;You cannot deregister this course&quot;);</span>
+<span class="fc" id="L321">            return 2;</span>
+        }
+<span class="fc" id="L323">        String deleteSql = &quot;DELETE FROM &quot; + tableName + &quot; WHERE off_id = ?&quot;;</span>
+
+<span class="fc" id="L325">        try (PreparedStatement pstmt = conn.prepareStatement(deleteSql)) {</span>
+<span class="fc" id="L326">            pstmt.setInt(1, off_id);</span>
+<span class="fc" id="L327">            int affectedRows = pstmt.executeUpdate();</span>
+<span class="fc bfc" id="L328" title="All 2 branches covered.">            if (affectedRows &gt; 0) {</span>
+<span class="fc" id="L329">                System.out.println(&quot;Successfully deregistered from student table with off_id: &quot; + off_id);</span>
+<span class="fc" id="L330">                return 3;</span>
+            } else {
+<span class="fc" id="L332">                System.out.println(&quot;No registration found for course with off_id: &quot; + off_id);</span>
+<span class="fc" id="L333">                return 4;</span>
+            }
+<span class="pc bpc" id="L335" title="1 of 2 branches missed.">        } catch (SQLException e) {</span>
+<span class="nc" id="L336">            System.out.println(&quot;Error deleting from &quot; + tableName + &quot; table: &quot; + e.getMessage());</span>
+<span class="nc" id="L337">            throw e;</span>
+        }
+    }
+
+    public static boolean checkPreRequisites(Connection conn, String courseCode, String tableName) throws SQLException {
+<span class="fc" id="L342">        String sql = &quot;SELECT pre_req_code FROM pre_req WHERE course_code = ?&quot;;</span>
+<span class="fc" id="L343">        Set&lt;String&gt; preRequisites = new HashSet&lt;&gt;();</span>
+
+<span class="fc" id="L345">        try (PreparedStatement statement = conn.prepareStatement(sql)) {</span>
+<span class="fc" id="L346">            statement.setString(1, courseCode);</span>
+<span class="fc" id="L347">            ResultSet rs = statement.executeQuery();</span>
+
+<span class="fc bfc" id="L349" title="All 2 branches covered.">            while (rs.next()) {</span>
+<span class="fc" id="L350">                preRequisites.add(rs.getString(&quot;pre_req_code&quot;));</span>
+            }
+<span class="nc" id="L352">        } catch (SQLException e) {</span>
+<span class="nc" id="L353">            System.out.println(&quot;Error fetching pre-requisites from database: &quot; + e.getMessage());</span>
+<span class="nc" id="L354">            throw e;</span>
+<span class="fc" id="L355">        }</span>
+
+<span class="fc" id="L357">        sql = &quot;SELECT code FROM &quot; + tableName + &quot; WHERE code = ?&quot;;</span>
+<span class="fc" id="L358">        try (PreparedStatement statement = conn.prepareStatement(sql)) {</span>
+<span class="fc bfc" id="L359" title="All 2 branches covered.">            for (String preReq : preRequisites) {</span>
+<span class="fc" id="L360">                statement.setString(1, preReq);</span>
+<span class="fc" id="L361">                ResultSet rs = statement.executeQuery();</span>
+<span class="pc bpc" id="L362" title="1 of 2 branches missed.">                if (!rs.next()) {</span>
+<span class="fc" id="L363">                    return false;</span>
+                }
+<span class="nc" id="L365">            }</span>
+<span class="pc bpc" id="L366" title="1 of 2 branches missed.">        } catch (SQLException e) {</span>
+<span class="nc" id="L367">            System.out.println(&quot;Error checking pre-requisites in table &quot; + tableName + &quot;: &quot; + e.getMessage());</span>
+<span class="nc" id="L368">            throw e;</span>
+<span class="fc" id="L369">        }</span>
+
+<span class="fc" id="L371">        return true;</span>
+    }
+
+    private boolean isEnrolled(Connection conn, int off_id) throws SQLException {
+<span class="fc" id="L375">        String tableName = getTableName();//department + &quot;_&quot; + entry_no + &quot;_&quot; + name;</span>
+<span class="fc" id="L376">        String sql = &quot;SELECT COUNT(*) AS count FROM &quot; + tableName + &quot; WHERE off_id = ?&quot;;</span>
+
+<span class="fc" id="L378">        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {</span>
+<span class="fc" id="L379">            pstmt.setInt(1, off_id);</span>
+<span class="fc" id="L380">            ResultSet rs = pstmt.executeQuery();</span>
+
+<span class="pc bpc" id="L382" title="1 of 2 branches missed.">            if (rs.next()) {</span>
+<span class="fc" id="L383">                int count = rs.getInt(&quot;count&quot;);</span>
+<span class="fc bfc" id="L384" title="All 2 branches covered.">                return count &gt; 0;</span>
+            }
+<span class="pc bpc" id="L386" title="1 of 2 branches missed.">        } catch (SQLException e) {</span>
+<span class="nc" id="L387">            System.out.println(&quot;Error checking if off_id is already enrolled: &quot; + e.getMessage());</span>
+<span class="nc" id="L388">            throw e;</span>
+<span class="nc" id="L389">        }</span>
+
+<span class="nc" id="L391">        return false;</span>
+    }
+
+    public boolean newCreditCheck(Connection conn, int credits, int yr, int sem) throws SQLException
+    {
+        int v2, v3;
+<span class="fc" id="L397">        int v1 = credits + getTotalCredits(conn, yr, sem);</span>
+<span class="fc bfc" id="L398" title="All 2 branches covered.">        if(batch == yr)</span>
+        {
+<span class="fc bfc" id="L400" title="All 2 branches covered.">            return v1 &lt;= 24 ;</span>
+        }
+        else
+        {
+<span class="fc bfc" id="L404" title="All 2 branches covered.">            if(sem == 1)</span>
+            {
+<span class="fc" id="L406">                v2 = getTotalCredits(conn, yr - 1, 1);</span>
+<span class="fc" id="L407">                v3 = getTotalCredits(conn, yr - 1, 2);</span>
+<span class="fc" id="L408">                double avg = (v2 + v3) / 2.0;</span>
+<span class="fc bfc" id="L409" title="All 2 branches covered.">                return  v1&lt;= avg * 1.25;</span>
+            }
+<span class="pc bpc" id="L411" title="1 of 2 branches missed.">            else if(sem == 2)</span>
+            {
+<span class="fc" id="L413">                v2 = getTotalCredits(conn, yr, 1);</span>
+<span class="fc" id="L414">                v3 = getTotalCredits(conn, yr - 1, 2);</span>
+<span class="fc" id="L415">                double avg = (v2 + v3) / 2.0;</span>
+<span class="fc bfc" id="L416" title="All 2 branches covered.">                return  v1&lt;= avg * 1.25;</span>
+            }
+<span class="nc" id="L418">            return false;</span>
+        }
+    }
+
+    public int getTotalCredits(Connection conn, int yr, int sem) throws SQLException {
+<span class="fc" id="L423">        int totalCredits = 0;</span>
+<span class="fc" id="L424">        String tableName = getTableName();</span>
+<span class="fc" id="L425">        String sql = &quot;SELECT code FROM &quot; + tableName + &quot; WHERE year = ? AND sem = ?&quot;;</span>
+<span class="fc" id="L426">        try (PreparedStatement statement = conn.prepareStatement(sql)) {</span>
+<span class="fc" id="L427">            statement.setInt(1, yr);</span>
+<span class="fc" id="L428">            statement.setInt(2, sem);</span>
+<span class="fc" id="L429">            ResultSet rs = statement.executeQuery();</span>
+<span class="fc bfc" id="L430" title="All 2 branches covered.">            while (rs.next()) {</span>
+<span class="fc" id="L431">                String code = rs.getString(&quot;code&quot;);</span>
+<span class="fc" id="L432">                Course course = Course.get_course(conn, code);</span>
+<span class="fc" id="L433">                int credits = course.getCredits();</span>
+<span class="fc" id="L434">                totalCredits += credits;</span>
+<span class="fc" id="L435">            }</span>
+<span class="nc" id="L436">        } catch (SQLException e) {</span>
+<span class="nc" id="L437">            System.out.println(&quot;Error getting total credits: &quot; + e.getMessage());</span>
+<span class="nc" id="L438">            throw e;</span>
+<span class="fc" id="L439">        }</span>
+<span class="fc" id="L440">        return totalCredits;</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

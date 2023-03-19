@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="org.example.st_loginTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2023-03-08T12:19:36" hostname="DELL-VISHNU1097" time="0.468">
+  <properties/>
+  <testcase name="correctCreds()" classname="org.example.st_loginTest" time="0.163"/>
+  <testcase name="testDelete()" classname="org.example.st_loginTest" time="0.158"/>
+  <testcase name="testUpdate()" classname="org.example.st_loginTest" time="0.143"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="org.example.PreReqTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2023-03-08T12:19:32" hostname="DELL-VISHNU1097" time="0.085">
+  <properties/>
+  <testcase name="wrongDelete()" classname="org.example.PreReqTest" time="0.02"/>
+  <testcase name="correctDelete()" classname="org.example.PreReqTest" time="0.005"/>
+  <testcase name="testInsert()" classname="org.example.PreReqTest" time="0.057"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

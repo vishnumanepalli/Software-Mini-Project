@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="org.example.MainTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2023-03-08T12:19:31" hostname="DELL-VISHNU1097" time="0.343">
+  <properties/>
+  <testcase name="testMainWithStudentLogin()" classname="org.example.MainTest" time="0.343"/>
+  <system-out><![CDATA[first programme
+Connection OK
+New student added to database!
+Table Table_20210002 created for Jane Doe
+New student login 20210002 added to database!
+New professor added to database!
+New instructor N_125 added to database!
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

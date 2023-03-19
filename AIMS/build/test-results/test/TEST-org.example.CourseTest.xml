@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="org.example.CourseTest" tests="7" skipped="0" failures="0" errors="0" timestamp="2023-03-08T12:19:28" hostname="DELL-VISHNU1097" time="1.489">
+  <properties/>
+  <testcase name="falseUpdate()" classname="org.example.CourseTest" time="0.362"/>
+  <testcase name="wrongDelete()" classname="org.example.CourseTest" time="0.227"/>
+  <testcase name="correctDelete()" classname="org.example.CourseTest" time="0.168"/>
+  <testcase name="correctGetCourse()" classname="org.example.CourseTest" time="0.135"/>
+  <testcase name="correctUpdate()" classname="org.example.CourseTest" time="0.112"/>
+  <testcase name="wrongGetCourse()" classname="org.example.CourseTest" time="0.271"/>
+  <testcase name="testCreateCourse()" classname="org.example.CourseTest" time="0.196"/>
+  <system-out><![CDATA[first programme
+Connection OK
+New course ZX101 added successfully.
+No course found with code: HS567
+Course deleted successfully.
+first programme
+Connection OK
+New course XY102 added successfully.
+No course found
+Course deleted successfully.
+first programme
+Connection OK
+New course XY112 added successfully.
+Course deleted successfully.
+first programme
+Connection OK
+New course AB123 added successfully.
+Course deleted successfully.
+first programme
+Connection OK
+New course ZX101 added successfully.
+Course updated successfully.
+Course deleted successfully.
+first programme
+Connection OK
+New course AB123 added successfully.
+Course deleted successfully.
+first programme
+Connection OK
+New course AC123 added successfully.
+Course deleted successfully.
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

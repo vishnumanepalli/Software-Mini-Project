@@ -1,0 +1,592 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Main.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">aims</a> &gt; <a href="index.source.html" class="el_package">org.example</a> &gt; <span class="el_source">Main.java</span></div><h1>Main.java</h1><pre class="source lang-java linenums">package org.example;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+//import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
+//import java.io.PrintStream;
+import java.io.PrintWriter;
+import java.sql.*;
+//import java.util.NoSuchElementException;
+import java.util.Scanner;
+
+<span class="nc" id="L14">public class Main {</span>
+
+    public static int suc_msg(boolean suc)
+    {
+<span class="fc bfc" id="L18" title="All 2 branches covered.">        if (suc) {</span>
+<span class="fc" id="L19">            System.out.println(&quot;Login successful!&quot;);</span>
+        } else {
+<span class="fc" id="L21">            System.out.println(&quot;Invalid credentials.&quot;);</span>
+        }
+<span class="fc" id="L23">        return 1;</span>
+    }
+
+    public static boolean isGraduate(Connection conn, Student st) throws SQLException {
+<span class="fc" id="L27">        String tableName = st.getTableName();</span>
+<span class="fc" id="L28">        String sql = &quot;SELECT * FROM &quot; + tableName;</span>
+<span class="fc" id="L29">        try (PreparedStatement statement = conn.prepareStatement(sql);</span>
+<span class="fc" id="L30">             ResultSet rs = statement.executeQuery()) {</span>
+
+<span class="fc" id="L32">            int p_coreCredits = 0;</span>
+<span class="fc" id="L33">            int btp = 0;</span>
+<span class="fc" id="L34">            int e_coreCredits = 0;</span>
+<span class="fc" id="L35">            int electiveCredits = 0;</span>
+
+<span class="fc bfc" id="L37" title="All 2 branches covered.">            while (rs.next()) {</span>
+<span class="fc" id="L38">                String code = rs.getString(&quot;code&quot;);</span>
+<span class="fc" id="L39">                int grade = rs.getInt(&quot;grade&quot;);</span>
+<span class="fc" id="L40">                int off = rs.getInt(&quot;off_id&quot;);</span>
+<span class="fc" id="L41">                int f = 0;</span>
+<span class="fc" id="L42">                Course c_t = Course.get_course(conn, code);</span>
+<span class="fc" id="L43">                int credits = c_t.getCredits();</span>
+
+
+<span class="fc" id="L46">                Course_Off co_t = Course_Off.getByOffId(conn, off);</span>
+<span class="fc" id="L47">                String type = co_t.getType();</span>
+
+<span class="fc bfc" id="L49" title="All 2 branches covered.">                if (type.equals(&quot;btp&quot;)) {</span>
+<span class="fc" id="L50">                    btp += credits;</span>
+                }
+<span class="fc bfc" id="L52" title="All 2 branches covered.">                else if (type.equals(&quot;program_core&quot;)) {</span>
+<span class="fc" id="L53">                    p_coreCredits += credits;</span>
+<span class="pc bpc" id="L54" title="1 of 2 branches missed.">                } else if (type.equals(&quot;engineering_core&quot;)) {</span>
+<span class="fc" id="L55">                    e_coreCredits += credits;</span>
+                } else {
+<span class="nc" id="L57">                    electiveCredits += credits;</span>
+                }
+
+<span class="pc bpc" id="L60" title="1 of 2 branches missed.">                if (grade &lt; 4) {</span>
+<span class="nc" id="L61">                    return false;</span>
+                }
+<span class="fc" id="L63">            }</span>
+<span class="pc bpc" id="L64" title="4 of 8 branches missed.">            if (p_coreCredits &gt;= 60 &amp;&amp; e_coreCredits &gt;= 30 &amp;&amp; btp &gt;= 6 &amp;&amp; p_coreCredits + electiveCredits + e_coreCredits &gt;= 120) {</span>
+<span class="fc" id="L65">                return true;</span>
+            } else {
+<span class="nc" id="L67">                return false;</span>
+            }
+
+<span class="pc bpc" id="L70" title="6 of 8 branches missed.">        } catch (SQLException e) {</span>
+<span class="nc" id="L71">            System.out.println(&quot;Error while calculating CGPA: &quot; + e.getMessage());</span>
+<span class="nc" id="L72">            throw e;</span>
+        }
+    }
+
+    public static int upload_grades(Connection conn, String inputFilePath) throws SQLException {
+<span class="fc" id="L77">        try (BufferedReader br = new BufferedReader(new FileReader(inputFilePath))) {</span>
+            String line;
+<span class="fc" id="L79">            int a=0;</span>
+<span class="fc bfc" id="L80" title="All 2 branches covered.">            while ((line = br.readLine()) != null) {</span>
+<span class="fc bfc" id="L81" title="All 2 branches covered.">                if(a==0)</span>
+                {
+<span class="fc" id="L83">                    a=1;</span>
+<span class="fc" id="L84">                    continue;</span>
+                }
+<span class="fc" id="L86">                String[] values = line.split(&quot;,&quot;);</span>
+<span class="fc" id="L87">                String stEntryNo = values[0];</span>
+<span class="fc" id="L88">                String course = values[1];</span>
+<span class="fc" id="L89">                int grade = Integer.parseInt(values[2]);</span>
+
+                // Get the student object from the database
+<span class="fc" id="L92">                Student student = Student.get_student(conn, stEntryNo);</span>
+<span class="pc bpc" id="L93" title="1 of 2 branches missed.">                if (student == null) {</span>
+<span class="nc" id="L94">                    continue;</span>
+                }
+
+                // Update the grade in the department_entryno_name table
+<span class="fc" id="L98">                String tableName = student.getTableName();//student.getDepartment() + &quot;_&quot; + student.getEntryNo() + &quot;_&quot; + student.getName();</span>
+<span class="fc" id="L99">                String updateSql = &quot;UPDATE &quot; + tableName + &quot; SET grade = ? WHERE code = ?&quot;;</span>
+<span class="fc" id="L100">                try (PreparedStatement statement = conn.prepareStatement(updateSql)) {</span>
+<span class="fc" id="L101">                    statement.setInt(1, grade);</span>
+<span class="fc" id="L102">                    statement.setString(2, course);</span>
+<span class="fc" id="L103">                    statement.executeUpdate();</span>
+<span class="nc" id="L104">                } catch (SQLException e) {</span>
+<span class="nc" id="L105">                    System.out.println(&quot;Error while updating grade in &quot; + tableName + &quot; table: &quot; + e.getMessage());</span>
+<span class="nc" id="L106">                    throw e;</span>
+<span class="fc" id="L107">                }</span>
+<span class="fc" id="L108">            }</span>
+<span class="fc" id="L109">            System.out.println(&quot;upload successful&quot;);</span>
+<span class="fc" id="L110">            return 1;</span>
+<span class="nc" id="L111">        } catch (IOException e) {</span>
+<span class="nc" id="L112">            System.out.println(&quot;Error reading input file: &quot; + e.getMessage());</span>
+<span class="nc" id="L113">            throw new RuntimeException(e);</span>
+        }
+    }
+    public static int transcript(Connection conn, Student st) throws SQLException, FileNotFoundException {
+<span class="fc" id="L117">        String tableName = st.getTableName();</span>
+<span class="fc" id="L118">        int year = st.getBatch();</span>
+<span class="fc" id="L119">        int sem = 1;</span>
+<span class="fc" id="L120">        String directoryPath = &quot;C:\\Users\\vishn\\OneDrive\\Desktop&quot;;</span>
+<span class="fc" id="L121">        String fileName = tableName + &quot;.txt&quot;;</span>
+<span class="fc" id="L122">        File file_0 = new File(directoryPath, fileName);</span>
+        try {
+<span class="fc" id="L124">            boolean result = file_0.createNewFile();</span>
+<span class="pc bpc" id="L125" title="1 of 2 branches missed.">            if (result) {</span>
+<span class="nc" id="L126">                System.out.println(&quot;File created successfully.&quot;);</span>
+            } else {
+<span class="fc" id="L128">                System.out.println(&quot;File already exists.&quot;);</span>
+            }
+<span class="nc" id="L130">        } catch (IOException e) {</span>
+<span class="nc" id="L131">            System.out.println(&quot;Error creating file: &quot; + e.getMessage());</span>
+<span class="fc" id="L132">        }</span>
+<span class="fc" id="L133">        try (PrintWriter writer = new PrintWriter(file_0)) {</span>
+<span class="fc" id="L134">            writer.println(&quot;Transcript for &quot; + tableName);</span>
+<span class="fc" id="L135">            writer.println(&quot;CGPA for student : &quot; + st.calculate_cgpa(conn));</span>
+<span class="pc bpc" id="L136" title="3 of 4 branches missed.">            while(!(year == (st.getBatch()+5) &amp;&amp; sem == 1)) {</span>
+<span class="fc" id="L137">                writer.println(&quot;SGPA for &quot; + year + &quot; year &quot; + sem + &quot; sem is &quot; + st.calculate_sgpa(conn, year, sem));</span>
+<span class="fc" id="L138">                String sql = &quot;SELECT * FROM &quot; + tableName + &quot; WHERE year = ? AND sem = ?&quot;;</span>
+<span class="fc" id="L139">                try (PreparedStatement statement = conn.prepareStatement(sql)){</span>
+<span class="fc" id="L140">                    statement.setInt(1,year);</span>
+<span class="fc" id="L141">                    statement.setInt(2,sem);</span>
+<span class="pc bpc" id="L142" title="1 of 2 branches missed.">                    if(sem == 2)</span>
+                    {
+<span class="nc" id="L144">                        sem = 1;</span>
+<span class="nc" id="L145">                        year = year + 1;</span>
+                    }
+                    else {
+<span class="fc" id="L148">                        sem = 2;</span>
+                    }
+<span class="fc" id="L150">                    ResultSet result = statement.executeQuery();</span>
+//			    ResultSetMetaData rsmd = result.getMetaData();
+//			    int columnsNumber = rsmd.getColumnCount();
+<span class="fc" id="L153">                    writer.printf(&quot;%-20s%-40s%-20s%-10s%-10s%n&quot;, &quot;code&quot;, &quot;name&quot;, &quot;prog&quot;, &quot;credits&quot;, &quot;grade&quot;);</span>
+<span class="fc" id="L154">                    writer.println();</span>
+<span class="fc bfc" id="L155" title="All 2 branches covered.">                    while (result.next()) {</span>
+<span class="fc" id="L156">                        String code = result.getString(&quot;code&quot;);</span>
+<span class="fc" id="L157">                        String grade = result.getString(&quot;grade&quot;);</span>
+<span class="fc" id="L158">                        int oid = result.getInt(&quot;off_id&quot;);</span>
+<span class="fc" id="L159">                        Course_Off off = Course_Off.getByOffId(conn, oid);</span>
+<span class="fc" id="L160">                        Course c_t = Course.get_course(conn, code);</span>
+<span class="fc" id="L161">                        String name = c_t.getTitle();</span>
+<span class="fc" id="L162">                        int credits = c_t.getCredits();</span>
+<span class="fc" id="L163">                        String prog = off.getType();</span>
+
+<span class="fc" id="L165">                        writer.printf(&quot;%-20s%-40s%-20s%-10d%-10s%n&quot;, code, name, prog, credits, grade);</span>
+<span class="fc" id="L166">                        writer.println();</span>
+<span class="fc" id="L167">                    }</span>
+
+<span class="fc" id="L169">                    System.out.println(&quot;All values in table &quot; + tableName + &quot; retrieved from database and written to &quot; + tableName + &quot;.txt!&quot;);</span>
+<span class="fc" id="L170">                    return 1;</span>
+<span class="nc" id="L171">                } catch (SQLException e) {</span>
+<span class="nc" id="L172">                    System.out.println(&quot;Error retrieving all values from table &quot; + tableName + &quot; from database: &quot; + e.getMessage());</span>
+<span class="nc" id="L173">                    throw e;</span>
+                }
+            }
+<span class="fc" id="L176">        }</span>
+<span class="nc" id="L177">        return 0;</span>
+    }
+
+    public static int printStGrades(Connection conn, String tableName) throws SQLException {
+<span class="fc" id="L181">        String sql = &quot;SELECT * FROM &quot; + tableName;</span>
+<span class="fc" id="L182">        try (PreparedStatement statement = conn.prepareStatement(sql)) {</span>
+<span class="fc" id="L183">            ResultSet result = statement.executeQuery();</span>
+<span class="fc" id="L184">            ResultSetMetaData rsmd = result.getMetaData();</span>
+<span class="fc" id="L185">            int columnsNumber = rsmd.getColumnCount();</span>
+<span class="fc bfc" id="L186" title="All 2 branches covered.">            for (int i = 1; i &lt;= columnsNumber; i++) {</span>
+<span class="fc" id="L187">                System.out.printf(&quot;%-20s&quot;, rsmd.getColumnName(i));</span>
+            }
+<span class="fc" id="L189">            System.out.println();</span>
+<span class="fc bfc" id="L190" title="All 2 branches covered.">            while (result.next()) {</span>
+<span class="fc bfc" id="L191" title="All 2 branches covered.">                for (int i = 1; i &lt;= columnsNumber; i++) {</span>
+<span class="fc" id="L192">                    System.out.printf(&quot;%-20s&quot;, result.getString(i));</span>
+                }
+<span class="fc" id="L194">                System.out.println();</span>
+            }
+<span class="fc" id="L196">            System.out.println(&quot;All values in table &quot; + tableName + &quot; retrieved from database!&quot;);</span>
+<span class="fc" id="L197">            return 1;</span>
+<span class="nc" id="L198">        } catch (SQLException e) {</span>
+<span class="nc" id="L199">            System.out.println(&quot;Error retrieving all values from table &quot; + tableName + &quot; from database: &quot; + e.getMessage());</span>
+<span class="nc" id="L200">            throw e;</span>
+        }
+    }
+
+    public static int printAllCourses(Connection conn) throws SQLException {
+<span class="fc" id="L205">        String sql = &quot;SELECT * FROM course&quot;;</span>
+<span class="fc" id="L206">        try (PreparedStatement statement = conn.prepareStatement(sql)) {</span>
+<span class="fc" id="L207">            ResultSet result = statement.executeQuery();</span>
+<span class="fc" id="L208">            System.out.printf(&quot;%-20s%-40s%-5s%-5s%-5s%-7s%-5s\n&quot;, &quot;code&quot;, &quot;title&quot;, &quot;lec&quot;, &quot;tut&quot;, &quot;per&quot;, &quot;s_hrs&quot;, &quot;credits&quot;);</span>
+<span class="fc bfc" id="L209" title="All 2 branches covered.">            while (result.next()) {</span>
+<span class="fc" id="L210">                String code = result.getString(&quot;code&quot;);</span>
+<span class="fc" id="L211">                String title = result.getString(&quot;title&quot;);</span>
+<span class="fc" id="L212">                int lec = result.getInt(&quot;lec&quot;);</span>
+<span class="fc" id="L213">                int tut = result.getInt(&quot;tut&quot;);</span>
+<span class="fc" id="L214">                int per = result.getInt(&quot;per&quot;);</span>
+<span class="fc" id="L215">                int s_hrs = result.getInt(&quot;s_hrs&quot;);</span>
+<span class="fc" id="L216">                int credits = result.getInt(&quot;credits&quot;);</span>
+
+<span class="fc" id="L218">                System.out.printf(&quot;%-20s%-40s%-5d%-5d%-5d%-7d%-5d\n&quot;, code, title, lec, tut, per, s_hrs, credits);</span>
+<span class="fc" id="L219">            }</span>
+<span class="fc" id="L220">            System.out.println(&quot;All courses retrieved from database!&quot;);</span>
+<span class="fc" id="L221">            return 1;</span>
+<span class="nc" id="L222">        } catch (SQLException e) {</span>
+<span class="nc" id="L223">            System.out.println(&quot;Error retrieving all courses from database: &quot; + e.getMessage());</span>
+<span class="nc" id="L224">            throw e;</span>
+        }
+    }
+
+    public static int printAllCourseOff(Connection conn) throws SQLException {
+<span class="fc" id="L229">        String sql = &quot;SELECT * FROM course_off&quot;;</span>
+<span class="fc" id="L230">        try (PreparedStatement statement = conn.prepareStatement(sql)) {</span>
+<span class="fc" id="L231">            ResultSet result = statement.executeQuery();</span>
+<span class="fc" id="L232">            System.out.printf(&quot;%-10s%-10s%-10s%-10s%-10s%-10s%-10s%-20s%-5s\n&quot;, &quot;off_id&quot;, &quot;code&quot;, &quot;prof&quot;, &quot;year&quot;, &quot;sem&quot;, &quot;cg_req&quot;, &quot;dep&quot;, &quot;type&quot;, &quot;permit&quot;);</span>
+<span class="fc bfc" id="L233" title="All 2 branches covered.">            while (result.next()) {</span>
+<span class="fc" id="L234">                int off_id = result.getInt(&quot;off_id&quot;);</span>
+<span class="fc" id="L235">                String code = result.getString(&quot;code&quot;);</span>
+<span class="fc" id="L236">                String prof = result.getString(&quot;prof&quot;);</span>
+<span class="fc" id="L237">                int year = result.getInt(&quot;year&quot;);</span>
+<span class="fc" id="L238">                int sem = result.getInt(&quot;sem&quot;);</span>
+<span class="fc" id="L239">                float cg_req = result.getFloat(&quot;cg_req&quot;);</span>
+<span class="fc" id="L240">                String dep = result.getString(&quot;dep&quot;);</span>
+<span class="fc" id="L241">                String type = result.getString(&quot;type&quot;);</span>
+<span class="fc" id="L242">                int permit = result.getInt(&quot;permit&quot;);</span>
+<span class="fc" id="L243">                System.out.printf(&quot;%-10d%-10s%-10s%-10d%-10d%-10.2f%-10s%-20s%-5d\n&quot;, off_id, code, prof, year, sem, cg_req, dep, type, permit);</span>
+<span class="fc" id="L244">            }</span>
+<span class="fc" id="L245">            System.out.println(&quot;All course offerings retrieved from database!&quot;);</span>
+<span class="fc" id="L246">            return 1;</span>
+<span class="nc" id="L247">        } catch (SQLException e) {</span>
+<span class="nc" id="L248">            System.out.println(&quot;Error retrieving all course offerings from database: &quot; + e.getMessage());</span>
+<span class="nc" id="L249">            throw e;</span>
+        }
+    }
+
+    @SuppressWarnings(&quot;unused&quot;)
+    public static int pre_run(Connection conn) throws SQLException
+    {
+<span class="fc" id="L256">        Department d1 = new Department(&quot;CSE&quot;, &quot;Computer Science&quot;);</span>
+<span class="fc" id="L257">        d1.insert(conn);</span>
+<span class="fc" id="L258">        Department d2 = new Department(&quot;MNC&quot;, &quot;Maths &amp; Computing&quot;);</span>
+<span class="fc" id="L259">        d2.insert(conn);</span>
+<span class="fc" id="L260">        Department d3 = new Department(&quot;EEE&quot;, &quot;Electrical&quot;);</span>
+<span class="fc" id="L261">        d3.insert(conn);</span>
+<span class="fc" id="L262">        Department d4 = new Department(&quot;CIV&quot;, &quot;Civil&quot;);</span>
+<span class="fc" id="L263">        d4.insert(conn);</span>
+<span class="fc" id="L264">        Department d5 = new Department(&quot;CHE&quot;, &quot;Chemical&quot;);</span>
+<span class="fc" id="L265">        d5.insert(conn);</span>
+<span class="fc" id="L266">        Department d6 = new Department(&quot;MECH&quot;, &quot;Mechanical&quot;);</span>
+<span class="fc" id="L267">        d6.insert(conn);</span>
+<span class="fc" id="L268">        Department d7 = new Department(&quot;MMT&quot;, &quot;Metallurgy&quot;);</span>
+<span class="fc" id="L269">        d7.insert(conn);</span>
+<span class="fc" id="L270">        System.out.println(&quot;Departments inserted successfully&quot;);</span>
+
+<span class="fc" id="L272">        Student s1 = new Student(&quot;Sandy&quot;, &quot;2022CSB1064&quot;, &quot;CSE&quot;, 2022);</span>
+<span class="fc" id="L273">        s1.save_new_st(conn);</span>
+<span class="fc" id="L274">        st_login st1 = new st_login(&quot;2022CSB1064&quot;, &quot;iitropar&quot;);</span>
+<span class="fc" id="L275">        st1.insert(conn);</span>
+<span class="fc" id="L276">        Student s2 = new Student(&quot;Rosie&quot;, &quot;2020CSB1097&quot;, &quot;CSE&quot;, 2020);</span>
+<span class="fc" id="L277">        s2.save_new_st(conn);</span>
+<span class="fc" id="L278">        st_login st2 = new st_login(&quot;2020CSB1097&quot;, &quot;iitropar&quot;);</span>
+<span class="fc" id="L279">        st2.insert(conn);</span>
+<span class="fc" id="L280">        Student s3 = new Student(&quot;Lisa&quot;, &quot;2021CSB1098&quot;, &quot;CSE&quot;, 2021);</span>
+<span class="fc" id="L281">        s3.save_new_st(conn);</span>
+<span class="fc" id="L282">        st_login st3 = new st_login(&quot;2021CSB1098&quot;, &quot;iitropar&quot;);</span>
+<span class="fc" id="L283">        st3.insert(conn);</span>
+<span class="fc" id="L284">        Student s4 = new Student(&quot;Jennie&quot;, &quot;2022MCB1094&quot;, &quot;MNC&quot;, 2022);</span>
+<span class="fc" id="L285">        s4.save_new_st(conn);</span>
+<span class="fc" id="L286">        st_login st4 = new st_login(&quot;2022MCB1094&quot;, &quot;iitropar&quot;);</span>
+<span class="fc" id="L287">        st4.insert(conn);</span>
+<span class="fc" id="L288">        Student s5 = new Student(&quot;Ariana&quot;, &quot;2020EEB1084&quot;, &quot;EEE&quot;, 2020);</span>
+<span class="fc" id="L289">        s5.save_new_st(conn);</span>
+<span class="fc" id="L290">        st_login st5 = new st_login(&quot;2020EEB1084&quot;, &quot;iitropar&quot;);</span>
+<span class="fc" id="L291">        st5.insert(conn);</span>
+<span class="fc" id="L292">        Student s6 = new Student(&quot;Nancy&quot;, &quot;2021MEB1087&quot;, &quot;MECH&quot;, 2021);</span>
+<span class="fc" id="L293">        s6.save_new_st(conn);</span>
+<span class="fc" id="L294">        st_login st6 = new st_login(&quot;2021MEB1087&quot;, &quot;iitropar&quot;);</span>
+<span class="fc" id="L295">        st6.insert(conn);</span>
+<span class="fc" id="L296">        System.out.println(&quot;Students inserted successfully&quot;);</span>
+
+<span class="fc" id="L298">        Professor p1 = new Professor(&quot;Vishnu&quot;,&quot;P_101&quot;, &quot;CSE&quot;);</span>
+<span class="fc" id="L299">        p1.save_new_pr(conn);</span>
+<span class="fc" id="L300">        ins_login it1 = new ins_login(&quot;P_101&quot;, &quot;iitropar&quot;);</span>
+<span class="fc" id="L301">        it1.insert(conn);</span>
+<span class="fc" id="L302">        Professor p2 = new Professor(&quot;Sreya&quot;,&quot;P_103&quot;, &quot;CSE&quot;);</span>
+<span class="fc" id="L303">        p2.save_new_pr(conn);</span>
+<span class="fc" id="L304">        ins_login it2 = new ins_login(&quot;P_103&quot;, &quot;iitropar&quot;);</span>
+<span class="fc" id="L305">        it2.insert(conn);</span>
+<span class="fc" id="L306">        Professor p3 = new Professor(&quot;Lashi&quot;,&quot;P_104&quot;, &quot;MECH&quot;);</span>
+<span class="fc" id="L307">        p3.save_new_pr(conn);</span>
+<span class="fc" id="L308">        ins_login it3 = new ins_login(&quot;P_104&quot;, &quot;iitropar&quot;);</span>
+<span class="fc" id="L309">        it3.insert(conn);</span>
+<span class="fc" id="L310">        Professor p4 = new Professor(&quot;Karthik&quot;,&quot;P_107&quot;, &quot;EEE&quot;);</span>
+<span class="fc" id="L311">        p4.save_new_pr(conn);</span>
+<span class="fc" id="L312">        ins_login it4 = new ins_login(&quot;P_107&quot;, &quot;iitropar&quot;);</span>
+<span class="fc" id="L313">        it4.insert(conn);</span>
+<span class="fc" id="L314">        Professor p5 = new Professor(&quot;Bapi&quot;,&quot;P_111&quot;, &quot;CIV&quot;);</span>
+<span class="fc" id="L315">        p5.save_new_pr(conn);</span>
+<span class="fc" id="L316">        ins_login it5 = new ins_login(&quot;P_111&quot;, &quot;iitropar&quot;);</span>
+<span class="fc" id="L317">        it5.insert(conn);</span>
+<span class="fc" id="L318">        System.out.println(&quot;Professors inserted successfully&quot;);</span>
+
+<span class="fc" id="L320">        Course c1=new Course(&quot;CS908&quot;, &quot;Infinite Computation&quot;, 9, 8, 7, 6, 5);</span>
+<span class="fc" id="L321">        c1.createCourse(conn);</span>
+<span class="fc" id="L322">        Course ci=new Course(&quot;BTP1&quot;, &quot;B T Project&quot;, 0, 0, 0, 0, 3);</span>
+<span class="fc" id="L323">        ci.createCourse(conn);</span>
+<span class="fc" id="L324">        Course cj=new Course(&quot;BTP2&quot;, &quot;B T Project&quot;, 0, 0, 0, 0, 3);</span>
+<span class="fc" id="L325">        cj.createCourse(conn);</span>
+<span class="fc" id="L326">        Course c2=new Course(&quot;CS306&quot;, &quot;Theorey of Computation&quot;, 9, 8, 7, 6, 5);</span>
+<span class="fc" id="L327">        c2.createCourse(conn);</span>
+<span class="fc" id="L328">        Course c3=new Course(&quot;CS304&quot;, &quot;Computer Networks&quot;, 9, 8, 7, 6, 5);</span>
+<span class="fc" id="L329">        c3.createCourse(conn);</span>
+<span class="fc" id="L330">        Course c4=new Course(&quot;CS305&quot;, &quot;Software Engg&quot;, 9, 8, 7, 6, 5);</span>
+<span class="fc" id="L331">        c4.createCourse(conn);</span>
+<span class="fc" id="L332">        Course c5=new Course(&quot;MA908&quot;, &quot;Infinite Maths&quot;, 9, 8, 7, 6, 5);</span>
+<span class="fc" id="L333">        c5.createCourse(conn);</span>
+<span class="fc" id="L334">        Course c6=new Course(&quot;ME201&quot;, &quot;Basic mechanics&quot;, 9, 8, 7, 6, 5);</span>
+<span class="fc" id="L335">        c6.createCourse(conn);</span>
+<span class="fc" id="L336">        System.out.println(&quot;All Courses inserted successfully&quot;);</span>
+
+<span class="fc" id="L338">        acad_login at1 = new acad_login(&quot;Acad&quot;, &quot;iitropar&quot;);</span>
+<span class="fc" id="L339">        at1.insert(conn);</span>
+
+<span class="fc" id="L341">        return 1;</span>
+    }
+
+    public static void main(String[] args) throws Exception
+    {
+<span class="fc" id="L346">        Connection conn = DB_connect.connect();</span>
+<span class="pc bpc" id="L347" title="1 of 2 branches missed.">        if (conn != null)</span>
+        {
+<span class="fc" id="L349">            try (Scanner scanner = new Scanner(System.in))</span>
+            {
+//				pre_run(conn);
+
+
+<span class="fc" id="L354">                System.out.println(&quot;1. Student&quot;);</span>
+<span class="fc" id="L355">                System.out.println(&quot;2. Instructor&quot;);</span>
+<span class="fc" id="L356">                System.out.println(&quot;3. Academic Officer&quot;);</span>
+<span class="fc" id="L357">                System.out.print(&quot;Select login type:&quot;);</span>
+<span class="fc" id="L358">                int loginType = scanner.nextInt();</span>
+
+<span class="fc" id="L360">                System.out.print(&quot;Enter user ID:&quot;);</span>
+<span class="fc" id="L361">                String userId = scanner.next();</span>
+
+<span class="fc" id="L363">                System.out.print(&quot;Enter password:&quot;);</span>
+<span class="fc" id="L364">                String password = scanner.next();</span>
+
+<span class="fc" id="L366">                boolean loginSuccessful = false;</span>
+
+<span class="pc bpc" id="L368" title="1 of 2 branches missed.">                if (loginType == 1)</span>
+                {
+<span class="fc" id="L370">                    st_login sl1 = new st_login(userId, password);</span>
+<span class="fc" id="L371">                    loginSuccessful = sl1.checkCredentials(conn);</span>
+<span class="fc" id="L372">                    Student s1 = Student.get_student(conn, userId);</span>
+<span class="fc" id="L373">                    suc_msg(loginSuccessful);</span>
+<span class="pc bpc" id="L374" title="1 of 2 branches missed.">                    while(loginSuccessful)</span>
+                    {
+<span class="fc" id="L376">                        System.out.println(&quot;0. Graduation Check&quot;);</span>
+<span class="fc" id="L377">                        System.out.println(&quot;1. View Grades&quot;);</span>
+<span class="fc" id="L378">                        System.out.println(&quot;2. Get current CGPA&quot;);</span>
+<span class="fc" id="L379">                        System.out.println(&quot;3. Register Course&quot;);</span>
+<span class="fc" id="L380">                        System.out.println(&quot;4. Deregister Course&quot;);</span>
+<span class="fc" id="L381">                        System.out.print(&quot;Select operation type:&quot;);</span>
+<span class="fc" id="L382">                        int opType = scanner.nextInt();</span>
+<span class="pc bpc" id="L383" title="1 of 2 branches missed.">                        if(opType == 1)</span>
+                        {
+<span class="nc" id="L385">                            printStGrades(conn, s1.getTableName());</span>
+                        }
+<span class="pc bpc" id="L387" title="1 of 2 branches missed.">                        else if(opType == 2)</span>
+                        {
+<span class="nc" id="L389">                            double cg = s1.calculate_cgpa(conn);</span>
+<span class="nc" id="L390">                            System.out.printf(&quot;Current CGPA: %f\n&quot;, cg);</span>
+<span class="nc" id="L391">                        }</span>
+<span class="pc bpc" id="L392" title="1 of 2 branches missed.">                        else if(opType == 3)</span>
+                        {
+<span class="nc" id="L394">                            printAllCourseOff(conn);</span>
+<span class="nc" id="L395">                            System.out.print(&quot;Enter off_id which you like to register : &quot;);</span>
+<span class="nc" id="L396">                            int c_of = scanner.nextInt();</span>
+<span class="nc" id="L397">                            System.out.print(&quot;Enter year : &quot;);</span>
+<span class="nc" id="L398">                            int year = scanner.nextInt();</span>
+<span class="nc" id="L399">                            System.out.print(&quot;Enter sem : &quot;);</span>
+<span class="nc" id="L400">                            int sem = scanner.nextInt();</span>
+<span class="nc" id="L401">                            s1.new_reg(conn, c_of, year, sem);</span>
+<span class="nc" id="L402">                        }</span>
+<span class="pc bpc" id="L403" title="1 of 2 branches missed.">                        else if(opType == 4)</span>
+                        {
+<span class="nc" id="L405">                            printStGrades(conn, s1.getTableName());</span>
+<span class="nc" id="L406">                            System.out.print(&quot;Enter off_id which you like to deregister : &quot;);</span>
+<span class="nc" id="L407">                            int o_id = scanner.nextInt();</span>
+<span class="nc" id="L408">                            s1.dereg(conn, o_id);</span>
+                        }
+                        else
+                        {
+                            break;
+                        }
+<span class="nc" id="L414">                    }</span>
+<span class="fc" id="L415">                }</span>
+<span class="nc bnc" id="L416" title="All 2 branches missed.">                else if (loginType == 2)</span>
+                {
+<span class="nc" id="L418">                    ins_login il1 = new ins_login(userId, password);</span>
+<span class="nc" id="L419">                    loginSuccessful = il1.checkCredentials(conn);</span>
+<span class="nc" id="L420">                    Professor p1 = Professor.get_professor(conn, userId);</span>
+<span class="nc" id="L421">                    suc_msg(loginSuccessful);</span>
+<span class="nc bnc" id="L422" title="All 2 branches missed.">                    while(loginSuccessful)</span>
+                    {
+<span class="nc" id="L424">                        System.out.println(&quot;1. View Grade of all Students&quot;);</span>
+<span class="nc" id="L425">                        System.out.println(&quot;2. Register Offering&quot;);</span>
+<span class="nc" id="L426">                        System.out.println(&quot;3. Deregister Offering&quot;);</span>
+<span class="nc" id="L427">                        System.out.println(&quot;4. Update course grdades&quot;);</span>
+<span class="nc" id="L428">                        System.out.print(&quot;Select operation type:&quot;);</span>
+<span class="nc" id="L429">                        int opType = scanner.nextInt();</span>
+<span class="nc bnc" id="L430" title="All 2 branches missed.">                        if(opType == 1)</span>
+                        {
+<span class="nc" id="L432">                            System.out.print(&quot;Enter Student ID for viewing grades:&quot;);</span>
+<span class="nc" id="L433">                            String viewGradeSt = scanner.next();</span>
+<span class="nc" id="L434">                            Student v1 = Student.get_student(conn, viewGradeSt);</span>
+<span class="nc" id="L435">                            printStGrades(conn,v1.getTableName());</span>
+
+<span class="nc" id="L437">                        }</span>
+<span class="nc bnc" id="L438" title="All 2 branches missed.">                        else if(opType == 2)</span>
+                        {
+<span class="nc" id="L440">                            printAllCourses(conn);</span>
+<span class="nc" id="L441">                            System.out.println(&quot;Please enter the following information for the new course offering:&quot;);</span>
+
+<span class="nc" id="L443">                            System.out.print(&quot;Course code: &quot;);</span>
+<span class="nc" id="L444">                            String code = scanner.next();</span>
+
+<span class="nc" id="L446">                            System.out.print(&quot;Year: &quot;);</span>
+<span class="nc" id="L447">                            int year = scanner.nextInt();</span>
+<span class="nc" id="L448">                            scanner.nextLine();</span>
+
+<span class="nc" id="L450">                            System.out.print(&quot;Semester: &quot;);</span>
+<span class="nc" id="L451">                            int sem = scanner.nextInt();</span>
+<span class="nc" id="L452">                            scanner.nextLine();</span>
+
+<span class="nc" id="L454">                            System.out.print(&quot;CGPA requirement: &quot;);</span>
+<span class="nc" id="L455">                            float cg_req = scanner.nextFloat();</span>
+<span class="nc" id="L456">                            scanner.nextLine();</span>
+
+<span class="nc" id="L458">                            System.out.print(&quot;Department: &quot;);</span>
+<span class="nc" id="L459">                            String dep = scanner.next();</span>
+
+<span class="nc" id="L461">                            System.out.print(&quot;Type: &quot;);</span>
+<span class="nc" id="L462">                            String type = scanner.next();</span>
+
+<span class="nc" id="L464">                            Course_Off co_1 = new Course_Off(code, p1.getId(), year, sem, cg_req, dep, type);</span>
+<span class="nc" id="L465">                            co_1.save(conn);</span>
+
+<span class="nc" id="L467">                            String cou1 = code;</span>
+<span class="nc" id="L468">                            System.out.println(cou1);</span>
+                            String cou2;
+                            while(true)
+                            {
+<span class="nc" id="L472">                                System.out.print(&quot;Enter new prereq for this course: &quot;);</span>
+<span class="nc" id="L473">                                cou2 = scanner.next();</span>
+<span class="nc bnc" id="L474" title="All 2 branches missed.">                                if(cou2.equals(&quot;q&quot;))</span>
+                                {
+<span class="nc" id="L476">                                    break;</span>
+                                }
+<span class="nc" id="L478">                                PreReq pq1 = new PreReq(cou1, cou2);</span>
+<span class="nc" id="L479">                                pq1.insert(conn);</span>
+<span class="nc" id="L480">                            }</span>
+
+<span class="nc" id="L482">                        }</span>
+<span class="nc bnc" id="L483" title="All 2 branches missed.">                        else if(opType == 3)</span>
+                        {
+<span class="nc" id="L485">                            printAllCourseOff(conn);</span>
+<span class="nc" id="L486">                            System.out.print(&quot;Enter off_id to degister offering : &quot;);</span>
+<span class="nc" id="L487">                            int o_id = scanner.nextInt();</span>
+<span class="nc" id="L488">                            Course_Off.delete(conn, o_id);</span>
+<span class="nc" id="L489">                        }</span>
+<span class="nc bnc" id="L490" title="All 2 branches missed.">                        else if(opType == 4)</span>
+                        {
+<span class="nc" id="L492">                            System.out.print(&quot;Enter Link for uploading grades : &quot;);</span>
+<span class="nc" id="L493">                            String file = scanner.next();</span>
+<span class="nc" id="L494">                            upload_grades(conn, file);//&quot;C:\\Users\\vishn\\Downloads\\sheet-2.csv&quot;</span>
+                        }
+                        else
+                        {
+                            break;
+                        }
+<span class="nc" id="L500">                    }</span>
+<span class="nc" id="L501">                }</span>
+<span class="nc bnc" id="L502" title="All 2 branches missed.">                else if (loginType == 3)</span>
+                {
+<span class="nc" id="L504">                    acad_login al1= new acad_login(userId, password);</span>
+<span class="nc" id="L505">                    loginSuccessful = al1.checkCredentials(conn);</span>
+<span class="nc" id="L506">                    suc_msg(loginSuccessful);</span>
+<span class="nc bnc" id="L507" title="All 2 branches missed.">                    while(loginSuccessful)</span>
+                    {
+<span class="nc" id="L509">                        System.out.println(&quot;0. Delete Course Catalogue&quot;);</span>
+<span class="nc" id="L510">                        System.out.println(&quot;1. Add Course Catalogue&quot;);</span>
+<span class="nc" id="L511">                        System.out.println(&quot;2. View Grade of all Students&quot;);</span>
+<span class="nc" id="L512">                        System.out.println(&quot;3. Generate transcript of students&quot;);</span>
+<span class="nc" id="L513">                        System.out.println(&quot;4. Freeze Offer for registering&quot;);</span>
+<span class="nc" id="L514">                        System.out.print(&quot;Select operation type:&quot;);</span>
+<span class="nc" id="L515">                        int opType = scanner.nextInt();</span>
+<span class="nc bnc" id="L516" title="All 2 branches missed.">                        if(opType == 0)</span>
+                        {
+<span class="nc" id="L518">                            printAllCourses(conn);</span>
+
+<span class="nc" id="L520">                            System.out.print(&quot;Enter course code to delete: &quot;);</span>
+<span class="nc" id="L521">                            String code = scanner.next();</span>
+<span class="nc" id="L522">                            Course.deleteCourse(conn, code);</span>
+                        }
+<span class="nc bnc" id="L524" title="All 2 branches missed.">                        if(opType == 1)</span>
+                        {
+//							printAllCourses(conn);
+
+<span class="nc" id="L528">                            System.out.print(&quot;Enter course code: &quot;);</span>
+<span class="nc" id="L529">                            String code = scanner.next();</span>
+
+<span class="nc" id="L531">                            System.out.print(&quot;Enter course title: &quot;);</span>
+<span class="nc" id="L532">                            String title = scanner.next();</span>
+
+<span class="nc" id="L534">                            System.out.print(&quot;Enter number of lecture hours: &quot;);</span>
+<span class="nc" id="L535">                            int lec = scanner.nextInt();</span>
+
+<span class="nc" id="L537">                            System.out.print(&quot;Enter number of tutorial hours: &quot;);</span>
+<span class="nc" id="L538">                            int tut = scanner.nextInt();</span>
+
+<span class="nc" id="L540">                            System.out.print(&quot;Enter number of practical hours: &quot;);</span>
+<span class="nc" id="L541">                            int per = scanner.nextInt();</span>
+
+<span class="nc" id="L543">                            System.out.print(&quot;Enter number of self study hours: &quot;);</span>
+<span class="nc" id="L544">                            int s_hrs = scanner.nextInt();</span>
+
+<span class="nc" id="L546">                            System.out.print(&quot;Enter number of credits: &quot;);</span>
+<span class="nc" id="L547">                            int credits = scanner.nextInt();</span>
+
+<span class="nc" id="L549">                            Course n_edit = new Course(code, title, lec, tut, per, s_hrs, credits);</span>
+<span class="nc" id="L550">                            n_edit.createCourse(conn);</span>
+<span class="nc" id="L551">                        }</span>
+<span class="nc bnc" id="L552" title="All 2 branches missed.">                        else if(opType == 2)</span>
+                        {
+<span class="nc" id="L554">                            System.out.print(&quot;Enter Student ID for viewing grades ; &quot;);</span>
+<span class="nc" id="L555">                            String viewGradeSt = scanner.next();</span>
+<span class="nc" id="L556">                            Student v1 = Student.get_student(conn, viewGradeSt);</span>
+<span class="nc" id="L557">                            printStGrades(conn,v1.getTableName());</span>
+<span class="nc" id="L558">                        }</span>
+<span class="nc bnc" id="L559" title="All 2 branches missed.">                        else if(opType == 3)</span>
+                        {
+
+<span class="nc" id="L562">                            System.out.print(&quot;Enter Student ID for generating Transcript : &quot;);</span>
+<span class="nc" id="L563">                            String transSt = scanner.next();</span>
+<span class="nc" id="L564">                            System.out.println(Student.get_student(conn, transSt).getTableName());</span>
+<span class="nc" id="L565">                            transcript(conn, Student.get_student(conn, transSt));</span>
+<span class="nc" id="L566">                        }</span>
+<span class="nc bnc" id="L567" title="All 2 branches missed.">                        else if(opType == 4)</span>
+                        {
+<span class="nc" id="L569">                            printAllCourseOff(conn);</span>
+<span class="nc" id="L570">                            System.out.println(&quot;Enter offering ID you need to freeze registering : &quot;);</span>
+<span class="nc" id="L571">                            int off = scanner.nextInt();</span>
+<span class="nc" id="L572">                            Course_Off.getByOffId(conn, off).updatePermit(conn);</span>
+                        }
+                        else
+                        {
+                            break;
+                        }
+<span class="nc" id="L578">                    }</span>
+<span class="nc" id="L579">                }</span>
+                else
+                {
+<span class="nc" id="L582">                    System.out.println(&quot;Invalid login type selected.&quot;);</span>
+                }
+            }
+        }
+        else
+        {
+<span class="nc" id="L588">            System.out.println(&quot;Connection failed&quot;);</span>
+        }
+<span class="fc" id="L590">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="org.example.MainMethodTest" tests="7" skipped="0" failures="0" errors="0" timestamp="2023-03-08T12:19:30" hostname="DELL-VISHNU1097" time="0.594">
+  <properties/>
+  <testcase name="gradCheck()" classname="org.example.MainMethodTest" time="0.449"/>
+  <testcase name="testSuc()" classname="org.example.MainMethodTest" time="0.002"/>
+  <testcase name="uploadTest()" classname="org.example.MainMethodTest" time="0.017"/>
+  <testcase name="coursesTest()" classname="org.example.MainMethodTest" time="0.011"/>
+  <testcase name="courseOffTest()" classname="org.example.MainMethodTest" time="0.004"/>
+  <testcase name="gradesTest()" classname="org.example.MainMethodTest" time="0.049"/>
+  <testcase name="transcriptTest()" classname="org.example.MainMethodTest" time="0.042"/>
+  <system-out><![CDATA[first programme
+Connection OK
+Departments inserted successfully
+New student added to database!
+Table Table_2022CSB1064 created for Sandy
+New student login 2022CSB1064 added to database!
+New student added to database!
+Table Table_2020CSB1097 created for Rosie
+New student login 2020CSB1097 added to database!
+New student added to database!
+Table Table_2021CSB1098 created for Lisa
+New student login 2021CSB1098 added to database!
+New student added to database!
+Table Table_2022MCB1094 created for Jennie
+New student login 2022MCB1094 added to database!
+New student added to database!
+Table Table_2020EEB1084 created for Ariana
+New student login 2020EEB1084 added to database!
+New student added to database!
+Table Table_2021MEB1087 created for Nancy
+New student login 2021MEB1087 added to database!
+Students inserted successfully
+New professor added to database!
+New instructor P_101 added to database!
+New professor added to database!
+New instructor P_103 added to database!
+New professor added to database!
+New instructor P_104 added to database!
+New professor added to database!
+New instructor P_107 added to database!
+New professor added to database!
+New instructor P_111 added to database!
+Professors inserted successfully
+New course CS908 added successfully.
+New course BTP1 added successfully.
+New course BTP2 added successfully.
+New course CS306 added successfully.
+New course CS304 added successfully.
+New course CS305 added successfully.
+New course MA908 added successfully.
+New course ME201 added successfully.
+All Courses inserted successfully
+New user added to acad_office table!
+New student added to database!
+Table Table_20210004 created for James Smith
+New course NP299 added successfully.
+New course MP299 added successfully.
+New course LL299 added successfully.
+New course MM299 added successfully.
+New course CC299 added successfully.
+New professor added to database!
+New course offering added to database!
+New course offering added to database!
+New course offering added to database!
+New course offering added to database!
+New course offering added to database!
+New course offering added to database!
+New course offering added to database!
+Course offering retrieved from database!
+CGPA for James Smith is 0.0
+Course offering retrieved from database!
+CGPA for James Smith is 0.0
+Course offering retrieved from database!
+CGPA for James Smith is 0.0
+Course offering retrieved from database!
+CGPA for James Smith is 0.0
+Course offering retrieved from database!
+CGPA for James Smith is 0.0
+Course offering retrieved from database!
+CGPA for James Smith is 0.0
+Course offering retrieved from database!
+CGPA for James Smith is 0.0
+code                grade               year                sem                 off_id              
+MP299               9                   2021                1                   8                   
+NP299               9                   2021                2                   9                   
+LL299               9                   2022                1                   10                  
+MM299               9                   2022                2                   11                  
+CC299               9                   2023                1                   14                  
+BTP1                9                   2023                2                   12                  
+BTP2                9                   2023                2                   13                  
+All values in table Table_20210004 retrieved from database!
+File already exists.
+CGPA for James Smith is 9.0
+CGPA for James Smith is 9.0
+Course offering retrieved from database!
+All values in table Table_20210004 retrieved from database and written to Table_20210004.txt!
+off_id    code      prof      year      sem       cg_req    dep       type                permit
+8         MP299     N_125     2021      1         0.00      MNC       engineering_core    0    
+9         NP299     N_125     2021      2         0.00      MNC       program_core        0    
+10        LL299     N_125     2022      1         0.00      MNC       program_core        0    
+11        MM299     N_125     2022      2         0.00      MNC       program_core        0    
+12        BTP1      N_125     2023      2         0.00      MNC       btp                 0    
+13        BTP2      N_125     2023      2         0.00      MNC       btp                 0    
+14        CC299     N_125     2023      1         0.00      MNC       engineering_core    0    
+All course offerings retrieved from database!
+Course offering retrieved from database!
+Course offering retrieved from database!
+Course offering retrieved from database!
+Course offering retrieved from database!
+Course offering retrieved from database!
+Course offering retrieved from database!
+Course offering retrieved from database!
+truevfgb
+Student removed from database!
+Table Table_20210004 dropped.
+Course offering deleted from database!
+Course offering deleted from database!
+Course offering deleted from database!
+Course offering deleted from database!
+Course offering deleted from database!
+Course offering deleted from database!
+Course offering deleted from database!
+Professor removed from database!
+Course deleted successfully.
+Course deleted successfully.
+Course deleted successfully.
+Course deleted successfully.
+Course deleted successfully.
+Invalid credentials.
+Login successful!
+upload successful
+code                title                                   lec  tut  per  s_hrs  credits
+CS908               Infinite Computation                    9    8    7    6      5    
+BTP1                B T Project                             0    0    0    0      3    
+BTP2                B T Project                             0    0    0    0      3    
+CS306               Theorey of Computation                  9    8    7    6      5    
+CS304               Computer Networks                       9    8    7    6      5    
+CS305               Software Engg                           9    8    7    6      5    
+MA908               Infinite Maths                          9    8    7    6      5    
+ME201               Basic mechanics                         9    8    7    6      5    
+All courses retrieved from database!
+off_id    code      prof      year      sem       cg_req    dep       type                permit
+All course offerings retrieved from database!
+New student added to database!
+Table Table_20210001 created for John Doe
+code                grade               year                sem                 off_id              
+All values in table Table_20210001 retrieved from database!
+Student removed from database!
+Table Table_20210001 dropped.
+New student added to database!
+Table Table_20210001 created for John Doe
+File already exists.
+CGPA for John Doe is 0.0
+CGPA for John Doe is 0.0
+All values in table Table_20210001 retrieved from database and written to Table_20210001.txt!
+Student removed from database!
+Table Table_20210001 dropped.
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
